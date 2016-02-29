@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/item_fold"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_item_fold_height"
+        android:orientation="horizontal"
+        android:background="@android:color/black">
+
+    <Button
+            android:id="@+id/match_pc"
+            style="@style/list_item_fold_btn"
+            android:text="@string/match_pc"
+            android:drawableTop="@drawable/match_self"/>
+
+    <Button
+            android:id="@+id/match_rand"
+           style="@style/list_item_fold_btn"
+            android:text="@string/match_rand"
+            android:drawableTop="@drawable/match_other"/>
+
+
+</LinearLayout>
+

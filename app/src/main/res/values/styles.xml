@@ -1,0 +1,71 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="android:Theme">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="head">
+        <item name="border_color">@android:color/white</item>
+        <item name="border_width">3dp</item>
+        <item name="radius">50dp</item>
+    </style>
+
+    <style name="title">
+        <item name="android:layout_height">@dimen/activity_title_height</item>
+        <item name="android:background">@android:color/holo_orange_light</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:paddingTop">3dp</item>
+        <item name="android:paddingBottom">3dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="list_item">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:drawableRight">@drawable/arrow</item>
+        <item name="android:layout_height">@dimen/activity_title_height</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="cornerRadius">15dp</item>
+        <item name="android:layout_margin">5dp</item>
+    </style>
+
+    <style name="edit_item">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/list_item_height</item>
+    </style>
+
+    <style name="edit_right" parent="edit_item">
+        <item name="android:hint">@string/edit_right</item>
+    </style>
+
+    <style name="edit_error" parent="edit_item">
+        <item name="android:hint">@string/edit_error</item>
+    </style>
+    
+    <style name="list_item_fold_btn">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="match_progressBar" >
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:progressDrawable">@drawable/match_progress</item>
+        <item name="android:maxHeight">25dp</item>
+        <item name="android:minHeight">25dp</item>
+    </style>
+
+    <style name="match_answer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/list_item_height</item>
+        <item name="android:layout_margin">5dp</item>
+    </style>
+</resources>

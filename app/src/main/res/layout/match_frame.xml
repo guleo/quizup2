@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:padding="10dp"
+        android:gravity="center_vertical">
+
+    <TextView
+            android:id="@+id/match_text"
+            android:background="@drawable/text_bkg"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:text="15天打一字"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/match_frame_text_size"
+            android:layout_marginBottom="10dp"/>
+    <com.example.frank.ui.ListButton
+            android:id="@+id/match_first"
+            android:layout_width="match_parent"
+            android:text="狗"
+            android:layout_height="@dimen/list_item_height"
+            android:layout_margin="5dp"/>
+
+    <com.example.frank.ui.ListButton
+            android:id="@+id/match_second"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/list_item_height"
+            android:text="胖"
+            android:layout_margin="5dp"/>
+
+    <com.example.frank.ui.ListButton
+            android:id="@+id/match_third"
+            android:layout_width="match_parent"
+            android:text="逗"
+            android:layout_height="@dimen/list_item_height"
+            android:layout_margin="5dp"/>
+
+    <com.example.frank.ui.ListButton
+            android:id="@+id/match_four"
+            android:layout_width="match_parent"
+            android:text="呵"
+            android:layout_height="@dimen/list_item_height"
+            android:layout_margin="5dp"/>
+</LinearLayout>

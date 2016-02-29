@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal">
+<TextView
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:textColor="@android:color/white"
+        android:id="@+id/text"/>
+    <com.example.frank.ui.SwitchButton
+            android:layout_width="20dp"
+            android:layout_height="50dp"
+            android:id="@+id/check"
+            android:defaultValue="false"
+            android:dependency="checkbox"
+            android:layout_marginLeft="40dp"/>
+</LinearLayout>

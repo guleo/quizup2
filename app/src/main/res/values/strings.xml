@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">我答</string>
+    <string name="register">New here?Sign up</string>
+
+    <string name="action_fastscroll">Fast scroll</string>
+    <string name="action_addpadding">Add padding</string>
+    <string name="action_showShadow">Show shadow</string>
+    <string name="action_showHeaderAndFooter">Show Header &amp; Footer</string>
+    <string name="action_updateDataset">Update dataset</string>
+
+    <string name="title_set">设置</string>
+    <string name="game_off">退出当前账号</string>
+    <string name="title_user">玩家数据</string>
+    <string name="title_friend">好友信息</string>
+    <string name="title_share">贡献一题</string>
+    <string name="game_match">对战场数</string>
+    <string name="game_score">平均得分</string>
+
+    <string name="sel_first">一级主题</string>
+    <string name="sel_second">二级主题</string>
+    <string name="edit_text">请填写题干</string>
+    <string name="edit_right">正确答案(12个字以内)</string>
+    <string name="edit_error">错误答案(12个字以内)</string>
+    <string name="edit_confirm">提交</string>
+
+    <string name="match_pc">玩家自测</string>
+    <string name="match_rand">随机匹配</string>
+    <string name="match_ext">决战(双倍积分)</string>
+
+    <string name="user_head">玩家信息</string>
+    <string name="user_head_post">上传图片</string>
+
+    <string name="title_result">分数</string>
+    <string name="game_right">答对</string>
+    <string name="game_time">时间</string>
+    <string name="game_result">得分</string>
+    <string name="game_txt">23</string>
+</resources>

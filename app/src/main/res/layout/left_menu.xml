@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:paddingLeft="40dp"
+              android:background="@android:color/transparent">
+
+    <com.example.frank.ui.RoundImageView
+            android:id="@+id/image_head_cur"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            style="@style/head"
+            android:src="@drawable/head"/>
+
+    <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/listView">
+    </ListView>
+</LinearLayout>

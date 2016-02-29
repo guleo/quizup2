@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+        android:layout_gravity="center_vertical">
+<RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/match_head_height"
+        android:orientation="vertical">
+   <include
+           android:id="@+id/match_left"
+           layout="@layout/match_head"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+           android:layout_gravity="left"/>
+    <TextView
+            android:id="@+id/match_sec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/match_head_sec"
+            android:textColor="@android:color/holo_orange_light"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"/>
+    <include
+            android:id="@+id/match_right"
+            layout="@layout/match_head"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"/>
+</RelativeLayout>
+
+ <RelativeLayout
+         android:id="@+id/match_frame"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_gravity="center">
+
+    <include layout="@layout/match_frame"/>
+ </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+            style="@style/title"
+            android:gravity="center"
+            android:text="@string/title_user"/>
+
+    <RelativeLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="20dp">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/game_match"
+                android:id="@+id/textView2"
+                android:textColor="@android:color/white"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1785"
+                android:textSize="@dimen/activity_text_size"
+                android:layout_below="@id/textView2"
+                android:id="@+id/match"
+                android:textColor="@android:color/white"/>
+
+        <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/game_score"
+                android:layout_toRightOf="@id/textView2"
+                android:layout_marginLeft="100dp"
+                android:textColor="@android:color/white"/>
+
+        <TextView
+                android:id="@+id/score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="120"
+                android:textSize="@dimen/activity_text_size"
+                android:textColor="@android:color/white"
+                android:layout_above="@+id/pieChart"
+                android:layout_alignStart="@+id/textView3"/>
+
+        <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/pieChart"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:textColor="@android:color/white"
+                android:textSize="10dp"
+                android:layout_below="@id/match"/>
+
+    </RelativeLayout>
+</LinearLayout>

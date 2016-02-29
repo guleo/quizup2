@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:res="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center_horizontal">
+
+    <TextView
+            style="@style/title"
+            android:gravity="center"
+            android:text="@string/title_result"/>
+
+    <TextView
+            android:id="@+id/match_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="YOU WIN"
+            android:textSize="@dimen/result_head_text"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="10dp"/>
+
+    <ScrollView
+            android:fadeScrollbars="false"
+            android:layerType="software"
+            android:clipChildren="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+        <LinearLayout
+                android:clipChildren="false"
+                android:layerType="software"
+                android:gravity="center_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            <TableLayout
+                    android:paddingTop="20dp"
+                    android:paddingBottom="60dp"
+                    android:paddingLeft="40dp"
+                    android:paddingRight="40dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:rowCount="3"
+                    android:columnCount="3"
+                    android:stretchColumns="*">
+
+                <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+
+                    <com.example.frank.ui.RoundImageView
+                            android:layout_gravity="left"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:src="@drawable/head"
+
+                            res:radius="25dp"
+                            android:id="@+id/view"/>
+
+                    <TextView
+                            android:layout_marginStart="15dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="abc"
+                            android:textColor="@android:color/white"
+                            android:id="@+id/textView4"
+                            android:layout_centerVertical="true"
+                            android:layout_toEndOf="@+id/view"/>
+
+
+                    <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/match_vs"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"
+                            android:id="@+id/imageView6"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/white"
+                            android:text="frank"
+                            android:layout_marginStart="15dp"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentEnd="true"
+                            android:id="@+id/textView5"/>
+
+
+                    <com.example.frank.ui.RoundImageView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:src="@drawable/head1"
+                            res:radius="25dp"
+                            android:id="@+id/view2"
+                            android:layout_alignParentTop="true"
+                            android:layout_toStartOf="@+id/textView5"/>
+                </RelativeLayout>
+
+                <TableRow
+                        android:layout_width="match_parent"
+                        android:gravity="center">
+
+                    <TextView
+                            android:gravity="center"
+                            android:layout_width="wrap_content"
+                            android:textColor="@android:color/white"
+                            android:layout_height="@dimen/result_text_height"
+                            android:textSize="@dimen/result_text"
+                            android:text="@string/game_right"
+                            android:id="@+id/textView1"/>
+
+                    <TextView
+                            android:gravity="center"
+                            android:textColor="@android:color/white"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/result_text_height"
+                            android:text="@string/game_result"
+                            android:id="@+id/textView2"
+                            android:textSize="@dimen/result_text"/>
+
+                    <TextView
+                            android:gravity="center"
+                            android:textColor="@android:color/white"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/result_text_height"
+                            android:text="@string/game_time"
+                            android:id="@+id/textView3"
+                            android:textSize="@dimen/result_text"/>
+                </TableRow>
+
+                <TableRow android:layout_width="match_parent">
+
+                    <TextView
+                            android:gravity="center"
+                            android:textColor="@android:color/white"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:text="@string/game_txt"
+                            android:textSize="15sp"/>
+
+                    <TextView
+                            android:gravity="center"
+                            android:textColor="@android:color/white"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:text="@string/game_txt"/>
+
+                    <TextView
+                            android:gravity="center"
+                            android:textColor="@android:color/white"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:text="@string/game_txt"/>
+                </TableRow>
+            </TableLayout>
+
+            <ImageSwitcher
+                    android:background="@android:color/white"
+                    android:id="@+id/switcher"
+                    android:layout_width="280dp"
+                    android:layout_height="400dp"/>
+            <android.support.v4.view.ViewPager
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:id="@+id/gallery"
+                    android:clipChildren="false"
+                    />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

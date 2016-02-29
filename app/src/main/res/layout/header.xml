@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        style="@style/title">
+        <com.example.frank.ui.RoundImageView
+                android:layout_width="@dimen/activity_title_height"
+                android:layout_height="wrap_content"
+                style="@style/head"
+                android:src="@drawable/head"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"/>
+    <TextView
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="frank"
+            android:textColor="@android:color/white"
+            android:id="@+id/textView"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"/>
+
+    <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/menuButton"
+            android:background="@drawable/menu"
+            android:layout_alignBottom="@+id/textView"
+            android:layout_alignParentEnd="true"/>
+</RelativeLayout>
