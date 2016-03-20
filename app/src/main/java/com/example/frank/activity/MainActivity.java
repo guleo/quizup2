@@ -4,12 +4,12 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
-import android.util.Log;
+import android.os.Bundle;;
 import android.view.*;
 import android.widget.*;
 import com.example.frank.adapter.MainAdapter;
 import com.example.frank.adapter.MenuAdapter;
+import com.example.frank.dialog.SweetAlertDialog;
 import com.example.frank.test.R;
 import com.example.frank.ui.Item;
 import com.example.frank.ui.MenuView;
@@ -17,15 +17,13 @@ import com.example.frank.ui.PinnedSectionListView;
 import com.example.frank.ui.RoundImageView;
 import com.example.frank.util.SoundUtil;
 import com.example.frank.util.Utils;
-import org.cocos2d.sound.SoundEngine;
-
-import java.util.Locale;
 
 /**
  * Created by frank on 2016/1/27.
  */
 public class MainActivity extends Activity implements View.OnClickListener{
 
+    private static final String EXIT_TEXT = "确定要退出吗?";
     private Intent intent;
     private Button match_pc;
     private Button match_rand;
@@ -54,7 +52,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
             hasHeaderAndFooter = savedInstanceState.getBoolean("hasHeaderAndFooter");
         }
 
-        SoundEngine.sharedEngine().playSound(this, SoundUtil.MUSIC_BACKGROUND, true);
+        SoundUtil.playMusic(this, LoginActivity.setEntity);
         initializeView();
         //     initializeHeaderAndFooter();
         initializeAdapter();
@@ -66,7 +64,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SoundEngine.sharedEngine().playEffect(getApplicationContext(), SoundUtil.EFFECT_BUTTON);
+                SoundUtil.playEffect(getBaseContext(),LoginActivity.setEntity,view);
                 Item item = (Item) mListView.getAdapter().getItem(position);
                 intent.setClassName(getApplicationContext(), Utils.ACTIVITY_PACKAGE_PATH + "." + item.getJumpActivityName());
                 startActivity(intent);
@@ -84,6 +82,11 @@ public class MainActivity extends Activity implements View.OnClickListener{
         mSet = (ImageButton) findViewById(R.id.menuButton);
         mExListView = (PinnedSectionListView) findViewById(R.id.expand_list);
         mHeadImage = (RoundImageView) findViewById(R.id.image_head_cur);
+        mSHeadImage = (RoundImageView) findViewById(R.id.smallHead);
+        if (LoginActivity.HeadDrawabale != null) {
+            mHeadImage.setImageDrawable(LoginActivity.HeadDrawabale);
+            mSHeadImage.setImageDrawable(LoginActivity.HeadDrawabale);
+        }
         //设置图标为不显示状态
         mExListView.setGroupIndicator(null);
 
@@ -91,13 +94,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     @Override
     protected void onPause() {
-        SoundEngine.sharedEngine().pauseSound();
+        SoundUtil.pauseMusic(this, LoginActivity.setEntity);
         super.onPause();
     }
 
     @Override
     protected void onResume() {
-        SoundEngine.sharedEngine().playSound(this, SoundUtil.MUSIC_BACKGROUND, true);
+        SoundUtil.playMusic(this, LoginActivity.setEntity);
         super.onResume();
     }
 
@@ -147,15 +150,42 @@ public class MainActivity extends Activity implements View.OnClickListener{
         Intent intent = new Intent();
         switch (v.getId()) {
             case R.id.menuButton:
-                SoundEngine.sharedEngine().playEffect(getApplicationContext(), SoundUtil.EFFECT_MENU);
+                SoundUtil.playEffect(getApplicationContext(), LoginActivity.setEntity,v);
                 menuView.toggle();
                 break;
             case R.id.image_head_cur:
                 intent.setClass(this,UserHeadActivity.class);
-                startActivity(intent);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivityForResult(intent,1);
                 break;
         }
-
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (LoginActivity.HeadDrawabale != null) {
+            mHeadImage.setImageDrawable(LoginActivity.HeadDrawabale);
+            mSHeadImage.setImageDrawable(LoginActivity.HeadDrawabale);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        final SweetAlertDialog dialog  = new SweetAlertDialog(this,SweetAlertDialog.WARNING_TYPE);
+        dialog.setTitleText(EXIT_TEXT);
+        dialog.setCancelText("no");
+        dialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                android.os.Process.killProcess(android.os.Process.myPid());
+            }
+        });
+        dialog.setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                sweetAlertDialog.hide();
+            }
+        });
+        dialog.show();
+    }
 }

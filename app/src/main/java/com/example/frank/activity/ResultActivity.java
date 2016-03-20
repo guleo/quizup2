@@ -46,8 +46,8 @@ public class ResultActivity extends Activity implements View.OnTouchListener {
         imageList.addAll(MatchRandActivity.drawList);
         initView();
         initAnim();
-        SoundEngine.sharedEngine().playSound(this, SoundUtil.MUSIC_BACKGROUND, true);
-        SoundEngine.sharedEngine().playEffect(this,SoundUtil.EFFECT_PASS);
+        SoundUtil.playMusic(this, LoginActivity.setEntity);
+        SoundUtil.playEffect(this, LoginActivity.setEntity,null);
     }
 
     private void initAnim() {
@@ -244,7 +244,7 @@ public class ResultActivity extends Activity implements View.OnTouchListener {
     }
     @Override
     protected void onPause() {
-        SoundEngine.sharedEngine().pauseSound();
+        SoundUtil.pauseMusic(this, LoginActivity.setEntity);
         super.onPause();
     }
 }

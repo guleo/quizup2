@@ -1,6 +1,16 @@
 <resources>
     <string name="app_name">我答</string>
     <string name="register">New here?Sign up</string>
+    <string name="swiftLogin">记住密码</string>
+
+    <string name="reg_username">name</string>
+    <string name="reg_pwd">password</string>
+    <string name="reg_confirm">confirm</string>
+    <string name="reg_sex">sex</string>
+    <string name="reg_male">男</string>
+    <string name="reg_female">女</string>
+    <string name="reg_school">school</string>
+    <string name="reg_btn">Sign up</string>
 
     <string name="action_fastscroll">Fast scroll</string>
     <string name="action_addpadding">Add padding</string>
@@ -35,4 +45,10 @@
     <string name="game_time">时间</string>
     <string name="game_result">得分</string>
     <string name="game_txt">23</string>
+
+    <string name="default_progressbar">Default Progressbar:</string>
+    <string name="dialog_default_title">Here\'s a message!</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="LOADING">Loading…</string>
 </resources>

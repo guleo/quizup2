@@ -49,19 +49,19 @@ public class MateActivity extends Activity implements Runnable{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mate);
         initView();
-        SoundEngine.sharedEngine().playSound(this, SoundUtil.MUSIC_MATCH, true);
+        SoundUtil.playMusic(this, LoginActivity.setEntity);
         setProcess();
     }
 
     @Override
     protected void onPause() {
-        SoundEngine.sharedEngine().pauseSound();
+        SoundUtil.pauseMusic(this, LoginActivity.setEntity);
         super.onDestroy();
     }
 
     @Override
     protected void onResume() {
-        SoundEngine.sharedEngine().resumeSound();
+        SoundUtil.resumeMusic(this, LoginActivity.setEntity);
         super.onResume();
     }
 

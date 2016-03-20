@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 import com.example.frank.test.R;
 import com.example.frank.ui.ListButton;
+import com.example.frank.util.SoundUtil;
 
 /**
  * Created by frank on 2016/2/3.
@@ -23,6 +24,7 @@ public class ShareActivity extends Activity implements View.OnClickListener{
         setContentView(R.layout.share);
         initView();
         initClick();
+        SoundUtil.playMusic(this, LoginActivity.setEntity);
     }
 
 

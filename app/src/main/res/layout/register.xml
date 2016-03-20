@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:reg="http://schemas.android.com/apk/res-auto"
+                android:orientation="vertical"
+                android:layout_width="250dp"
+                android:layout_height="380dp"
+                android:gravity="center"
+                android:foreground="@android:color/transparent"
+                android:background="@drawable/reg_bgn">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reg_username"
+            android:textColor="@android:color/holo_red_light"
+            android:typeface="sans"
+            android:id="@+id/textView6"
+            android:layout_alignBaseline="@+id/editText3"
+            android:layout_alignStart="@+id/textView7"/>
+
+    <EditText
+            style="@style/reg_edit"
+            android:id="@+id/editText3"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/editText4"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_green_dark"
+            android:text="@string/reg_pwd"
+            android:id="@+id/textView7"
+            android:layout_alignBaseline="@+id/editText4"
+            android:layout_toStartOf="@+id/editText5"/>
+
+    <EditText
+            android:inputType="textPassword"
+            style="@style/reg_edit"
+            android:id="@+id/editText4"
+            android:layout_below="@+id/editText3"
+            android:layout_alignStart="@+id/editText5"/>
+
+    <TextView
+            android:textColor="@android:color/holo_blue_light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reg_confirm"
+            android:id="@+id/textView8"
+            android:layout_alignBaseline="@+id/editText5"
+            android:layout_alignTop="@+id/editText5"
+            android:layout_alignStart="@+id/textView7"/>
+
+    <EditText
+            android:inputType="textPassword"
+            style="@style/reg_edit"
+            android:id="@+id/editText5"
+            android:layout_below="@+id/editText4"
+            android:layout_alignParentEnd="true"/>
+
+    <TextView
+            android:layout_alignBaseline="@+id/radioGroup"
+            android:textColor="@android:color/holo_orange_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:gravity="center_vertical"
+            android:text="@string/reg_sex"
+            android:id="@+id/textView10"
+            android:layout_below="@+id/editText5"
+            android:layout_alignStart="@+id/textView8"/>
+
+    <RadioGroup
+            android:layout_width="150dp"
+            android:layout_height="35dp"
+            android:id="@+id/radioGroup"
+            android:orientation="horizontal"
+            android:layout_below="@+id/editText5"
+            android:layout_alignStart="@+id/editText3"
+            android:gravity="center_vertical">
+
+        <RadioButton
+                android:checked="true"
+                android:layout_width="22dp"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:text="@string/reg_male"
+                android:textColor="@drawable/male_txt"
+                android:button="@drawable/male_btn"
+                android:id="@+id/male_btn"/>
+
+        <RadioButton
+                android:text="@string/reg_female"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:textColor="@drawable/female_txt"
+                android:button="@drawable/female_btn"
+                android:id="@+id/female_btn"
+                android:layout_alignTop="@+id/radioGroup"
+                android:layout_alignEnd="@+id/editText3"/>
+
+    </RadioGroup>
+
+
+    <TextView
+            android:layout_alignBaseline="@+id/editText6"
+            android:textColor="@android:color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reg_school"
+            android:id="@+id/textView9"
+            android:layout_alignBottom="@+id/editText6"
+            android:layout_alignStart="@+id/textView10"/>
+
+    <EditText
+            style="@style/reg_edit"
+            android:id="@+id/editText6"
+            android:layout_marginTop="23dp"
+            android:layout_below="@+id/radioGroup"
+            android:layout_alignEnd="@+id/logUp"/>
+
+    <com.example.frank.ui.ListButton
+            android:id="@+id/logUp"
+            reg:buttonColor="@android:color/holo_green_light"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="@string/reg_btn"
+            android:textColor="@android:color/white"
+            android:typeface="serif"
+            android:layout_marginTop="29dp"
+            android:layout_below="@+id/editText6"
+            android:layout_alignStart="@+id/textView9"/>
+</RelativeLayout>

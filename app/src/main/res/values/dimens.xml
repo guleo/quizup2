@@ -31,4 +31,8 @@
     <dimen name="result_head_text">40sp</dimen>
     <dimen name="result_text_height">30dp</dimen>
     <dimen name="result_text">20sp</dimen>
+
+    <dimen name="alert_width">290dp</dimen>
+    <dimen name="common_circle_width">3dp</dimen>
+    <dimen name="progress_circle_radius">34dp</dimen>
 </resources>

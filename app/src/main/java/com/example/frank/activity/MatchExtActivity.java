@@ -24,7 +24,7 @@ public class MatchExtActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.match_ext);
-        SoundEngine.sharedEngine().playSound(this, SoundUtil.MUSIC_BATTLE,true);
+        SoundUtil.playMusic(this, LoginActivity.setEntity);
         initView();
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -44,7 +44,7 @@ public class MatchExtActivity extends Activity {
 
     @Override
     protected void onPause() {
-        SoundEngine.sharedEngine().pauseSound();
+        SoundUtil.pauseMusic(this, LoginActivity.setEntity);
         super.onPause();
     }
 

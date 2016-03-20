@@ -6,8 +6,8 @@ import android.graphics.*;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.widget.ImageView;
 import com.example.frank.test.R;
@@ -126,7 +126,7 @@ public class RoundImageView extends ImageView {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(@NonNull Canvas canvas) {
         if (getDrawable() == null)
             return;
         if (mov != null) {
@@ -177,7 +177,7 @@ public class RoundImageView extends ImageView {
         float mBHeight = mBitmap.getHeight();
 
         float scale;
-        float x = 0, y = 0;
+        float x, y;
         Matrix shaderMatrix = new Matrix();
         if (mBWidth > mBHeight) {
             scale = mRadius / mBHeight * 2;

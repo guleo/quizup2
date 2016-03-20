@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.*;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -171,6 +172,7 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
                     mLeft_score.setText(score + "");
                     mLeft_score.setTextColor(Color.GREEN);
                 } else {
+                    SoundUtil.playViberate(context.get(), LoginActivity.setEntity);
                     mAnswer[msg.arg1].setButtonColor(Color.RED);
                     mLeft_score.setTextColor(Color.RED);
                     showAdd(mLeft_right, false);
@@ -317,7 +319,8 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SoundEngine.sharedEngine().playSound(this, SoundUtil.MUSIC_BATTLE, true);
+
+        SoundUtil.playMusic(this, LoginActivity.setEntity);
         setContentView(R.layout.match_rand);
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -403,13 +406,13 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
 
     @Override
     protected void onPause() {
-        SoundEngine.sharedEngine().pauseSound();
+        SoundUtil.pauseMusic(this, LoginActivity.setEntity);
         super.onPause();
     }
 
     @Override
     protected void onRestart() {
-        SoundEngine.sharedEngine().resumeSound();
+        SoundUtil.playMusic(this, LoginActivity.setEntity);
         super.onResume();
     }
 

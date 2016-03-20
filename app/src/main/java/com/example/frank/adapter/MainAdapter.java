@@ -7,11 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import com.example.frank.activity.LoginActivity;
 import com.example.frank.activity.MateActivity;
 import com.example.frank.test.R;
 import com.example.frank.ui.Item;
 import com.example.frank.ui.ListButton;
 import com.example.frank.ui.PinnedSectionListView;
+import com.example.frank.util.SoundUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -209,6 +211,7 @@ public class MainAdapter extends BaseExpandableListAdapter implements SectionInd
     @Override
     public void onClick(View v) {
         Intent intent = new Intent();
+        SoundUtil.playEffect(context, LoginActivity.setEntity,v);
         switch (v.getId()) {
             case R.id.match_rand:
                 intent.setClass(context, MateActivity.class);

@@ -12,7 +12,7 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             style="@style/head"
-            android:src="@drawable/head"/>
+            android:src="@drawable/head_default"/>
 
     <ListView
             android:layout_width="match_parent"

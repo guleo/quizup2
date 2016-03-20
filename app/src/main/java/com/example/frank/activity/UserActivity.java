@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import com.example.frank.test.R;
+import com.example.frank.util.SoundUtil;
 import com.example.frank.util.UserUtil;
 import com.example.frank.util.Utils;
 import com.github.mikephil.charting.charts.PieChart;
@@ -29,6 +30,7 @@ public class UserActivity extends Activity {
         setContentView(R.layout.user);
         initView();
         initChart();
+        SoundUtil.playMusic(this, LoginActivity.setEntity);
     }
 
     private void initChart() {
