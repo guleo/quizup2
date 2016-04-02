@@ -7,10 +7,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import com.example.frank.test.R;
 import com.example.model.SetEntity;
-import com.example.persist.sqlite.SetSQLiteHelper;
 import org.cocos2d.sound.SoundEngine;
-
-import java.util.Set;
 
 /**
  * Created by frank on 2016/2/1.
@@ -29,7 +26,7 @@ public class SoundUtil {
 
     //播放音乐
     public static final void playMusic(Context context, SetEntity entity) {
-        if (entity.isSoundOn()) {
+        if (entity != null && entity.isSoundOn()) {
             switch (Utils.getTopActivity(context)) {
                 case "MatchRandActivity":
                     SoundEngine.sharedEngine()

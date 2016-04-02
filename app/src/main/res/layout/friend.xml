@@ -3,14 +3,31 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
-    <TextView
-            style="@style/title"
-            android:text="@string/title_friend"/>
+
+    <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        <TextView
+                android:text="@string/title_friend"
+                style="@style/title"/>
+
+    </RelativeLayout>
+
+
     <com.example.frank.ui.SearchBox
+            android:id="@+id/searchBox"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/list_item_height"
-            android:background="@android:color/holo_red_light">
+            android:layout_height="wrap_content">
     </com.example.frank.ui.SearchBox>
 
+    <android.support.v7.widget.RecyclerView
+            android:divider="@android:color/darker_gray"
+            android:background="@android:color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/friends">
+
+    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

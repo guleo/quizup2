@@ -11,7 +11,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -26,12 +25,17 @@ import com.example.model.SetEntity;
 import com.example.model.UserLoginEntity;
 import com.example.persist.sqlite.LoginSQLiteHelper;
 import com.example.persist.sqlite.SetSQLiteHelper;
-import java.io.*;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
  * Created by frank on 2016/1/23.
+ * 用户登录界面
  */
 
 
@@ -68,13 +72,13 @@ public class LoginActivity extends Activity implements View.OnClickListener, Swe
         dialog.hide();
     }
 
-    private void showMain() {
+    private void showLoad() {
         //登录成功之后重新存储用户名和密码
         if (isSwiftLog)
             updateData();
         dialog.dismiss();
         Intent intent = new Intent();
-        intent.setClass(this, MainActivity.class);
+        intent.setClass(this, LoadActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
@@ -120,7 +124,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Swe
                 mPwd.setEnabled(false);
             }
         }
-        if (dbHelper instanceof SetSQLiteHelper) {
+        else if (dbHelper instanceof SetSQLiteHelper) {
             Cursor c = db.rawQuery(SetSQLiteHelper.FIND_SET_INFO, null);
             if (c.getCount() != 0) {
                 c.moveToFirst();
@@ -232,20 +236,22 @@ public class LoginActivity extends Activity implements View.OnClickListener, Swe
                     String path = reader.readLine();
                     con.disconnect();
                     if (rec.equals("true")) {
-                        Log.d("path", path);
-                        url = new URL(path);
-                        con = (HttpURLConnection) url.openConnection();
-                        con.setDoInput(true);
-                        con.setRequestMethod("GET");
-                        Bitmap bitmap = BitmapFactory.decodeStream(con.getInputStream());
-                        HeadDrawabale = new BitmapDrawable(null,bitmap);
+                        if (path != null && !path.trim().equals("")) {
+                            url = new URL(path);
+                            con = (HttpURLConnection) url.openConnection();
+                            con.setDoInput(true);
+                            con.setRequestMethod("GET");
+                            Bitmap bitmap = BitmapFactory.decodeStream(con.getInputStream());
+                            HeadDrawabale = new BitmapDrawable(null, bitmap);
+                        }
+                        else HeadDrawabale = null;
                         return LOGIN_SUCCESS;
                     } else {
                         return LOGIN_FAIL;
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                    return LOGIN_CON;
+                    return LOGIN_FAIL;
                 } catch (IllegalArgumentException e) {
                     e.printStackTrace();
                     return LOGIN_CON;
@@ -270,7 +276,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Swe
                     loginHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            showMain();
+                            showLoad();
                         }
                     }, 1000);
                     isSwiftLog = true;

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/friend_list_height"
+                android:layout_margin="5dp"
+                xmlns:head="http://schemas.android.com/apk/res-auto"
+                android:background="@android:color/white">
+
+    <com.example.frank.ui.RoundImageView
+            head:radius="@dimen/friend_list_head_radius"
+            android:layout_width="@dimen/friend_list_head_radius"
+            android:layout_height="@dimen/friend_list_head_radius"
+            android:src="@drawable/head_default"
+            android:id="@+id/head"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="25dp"/>
+
+    <TextView
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="小米"
+            android:textSize="20sp"
+            android:layout_marginStart="32dp"
+            android:textColor="@android:color/black"
+            android:layout_above="@+id/school"
+            android:layout_toEndOf="@+id/head"/>
+
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sex"
+            android:src="@drawable/male"
+            android:layout_alignTop="@+id/username"
+            android:layout_toEndOf="@+id/username"
+            android:layout_above="@+id/school"/>
+
+    <TextView
+            android:id="@+id/school"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/head"
+            android:layout_alignStart="@+id/username"/>
+
+    <ImageButton
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:id="@+id/add"
+            android:visibility="invisible"
+            android:background="@drawable/add"
+            android:layout_marginEnd="40dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"/>
+</RelativeLayout>

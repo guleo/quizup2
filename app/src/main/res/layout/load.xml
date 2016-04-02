@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:wheel="http://schemas.android.com/apk/res-auto"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="bottom|right"
+              android:padding="20dp"
+        android:background="@drawable/load" >
+
+    <TextView
+            android:textColor="@android:color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:gravity="center_vertical"
+            android:text="@string/load_text"
+            android:id="@+id/text"/>
+
+    <com.example.frank.ui.ProgressWheel
+            android:id="@+id/progressWheel"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="bottom" />
+</LinearLayout>

@@ -51,4 +51,9 @@
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="LOADING">Loading…</string>
+
+    <string name="friend_list_box_hint">请输入用户名</string>
+    <string name="friend_search_box_btn">搜索</string>
+
+    <string name="load_text">载入中...</string>
 </resources>

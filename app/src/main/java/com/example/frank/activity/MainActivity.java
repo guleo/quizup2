@@ -99,6 +99,12 @@ public class MainActivity extends Activity implements View.OnClickListener{
     }
 
     @Override
+    protected void onStop() {
+        SoundUtil.stopMusic();
+        super.onStop();
+    }
+
+    @Override
     protected void onResume() {
         SoundUtil.playMusic(this, LoginActivity.setEntity);
         super.onResume();

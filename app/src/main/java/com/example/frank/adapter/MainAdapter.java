@@ -2,11 +2,13 @@ package com.example.frank.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import com.example.frank.activity.LoadActivity;
 import com.example.frank.activity.LoginActivity;
 import com.example.frank.activity.MateActivity;
 import com.example.frank.test.R;
@@ -14,10 +16,10 @@ import com.example.frank.ui.Item;
 import com.example.frank.ui.ListButton;
 import com.example.frank.ui.PinnedSectionListView;
 import com.example.frank.util.SoundUtil;
+import com.example.frank.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by frank on 2016/2/5.
@@ -30,14 +32,17 @@ public class MainAdapter extends BaseExpandableListAdapter implements SectionInd
     private List<Item> data = new ArrayList<>();
     private Item[] sections;
     private LayoutInflater mInflater;
+    private Typeface tf;
+
 
     public MainAdapter(Context context, Item[] sections) {
         this.context = context;
+        tf = Typeface.createFromAsset(context.getAssets(), Utils.GAME_TTF);
         if (sections != null)
             for (Item i : sections)
                 this.data.add(i);
         mInflater = LayoutInflater.from(context);
-        generateDataset('A', 'Z');
+        generateDataset();
 
     }
 
@@ -51,30 +56,27 @@ public class MainAdapter extends BaseExpandableListAdapter implements SectionInd
     }
 
     //对列表进行文本设置
-    public void generateDataset(char from, char to) {
-        final int sectionsNumber = to - from + 1;
+    public void generateDataset() {
+        final int sectionsNumber = LoadActivity.type.size();
         sections = new Item[sectionsNumber];
-        int sectionPosition = 0, listPosition = 0;
+        int  listPosition = 0;
         for (char i = 0; i < sectionsNumber; i++) {
-            Item section = new Item(Item.SECTION, String.valueOf((char) ('A' + i)));
-            section.sectionPosition = sectionPosition;
-            sections[sectionPosition] = section;
+            Item section = new Item(Item.SECTION, LoadActivity.type.get(i).get(0));
+            section.sectionPosition = i;
+            sections[i] = section;
             section.listPosition = listPosition++;
 
             data.add(section);
 
             //设置每一个条目的内容
-            final int itemsNumber = (int) Math.abs((Math.cos(2f * Math.PI / 3f * sectionsNumber / (i + 1f)) * 25f));
-            for (int j = 0; j < itemsNumber; j++) {
-                Item item = new Item(Item.ITEM, section.getText().toUpperCase(Locale.ENGLISH) + " - " + j);
-                item.sectionPosition = sectionPosition;
+            final int itemsNumber = LoadActivity.type.get(i).size();
+            for (int j = 1; j < itemsNumber; j++) {
+                Item item = new Item(Item.ITEM, LoadActivity.type.get(i).get(j));
+                item.sectionPosition = i;
                 item.listPosition = listPosition++;
                 data.add(item);
             }
-
-            sectionPosition++;
         }
-
         initListener();
     }
 
@@ -119,7 +121,6 @@ public class MainAdapter extends BaseExpandableListAdapter implements SectionInd
             return null;
         return data.get(groupPosition);
     }
-
     @Override
     public long getGroupId(int groupPosition) {
         return groupPosition;
@@ -145,6 +146,10 @@ public class MainAdapter extends BaseExpandableListAdapter implements SectionInd
         if (item.getType() == Item.SECTION) {
             TextView mText = (TextView) mInflater.inflate(R.layout.list_sector, parent, false);
             mText.setText(item.toString());
+            mText.setTextColor(context.getResources().getColor(android.R.color.white));
+
+            mText.setTypeface(tf);
+            mText.setTextSize(16);
             mText.setBackgroundColor(parent.getResources().getColor(COLORS[item.sectionPosition % COLORS.length]));
             return mText;
         } else {
@@ -154,6 +159,7 @@ public class MainAdapter extends BaseExpandableListAdapter implements SectionInd
             view.setBackgroundColor(parent.getResources().getColor(COLORS[item.sectionPosition % COLORS.length]));
 
             ListButton listButton = (ListButton) convertView.findViewById(R.id.f_button);
+            listButton.setText(item.getText());
             listButton.setClickable(false);
             if (isExpanded) {
                 Drawable d = context.getResources().getDrawable(R.drawable.arrow_expand);

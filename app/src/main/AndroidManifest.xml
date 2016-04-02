@@ -73,9 +73,10 @@
         </activity>
 
         <activity android:name="com.example.frank.activity.ResultActivity">
-            <action android:name="android.intent.action.MAIN"></action>
-            <category android:name="android.intent.category.DEFAULT"></category>
+            <action android:name="android.intent.action.MAIN"/>
         </activity>
+
+        <activity android:name="com.example.frank.activity.LoadActivity"/>
     </application>
 
     <uses-permission android:name="android.permission.VIBRATE"/>
