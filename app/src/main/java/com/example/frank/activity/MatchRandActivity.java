@@ -12,8 +12,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
@@ -26,19 +26,26 @@ import com.example.frank.ui.RoundImageView;
 import com.example.frank.util.GameUtil;
 import com.example.frank.util.SoundUtil;
 import com.example.frank.util.Utils;
-import org.cocos2d.sound.SoundEngine;
-
+import com.example.model.QuestionEntity;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 
 /**
  * Created by frank on 2016/2/11.
+ * 随机匹配时的游戏界面
  */
 public class MatchRandActivity extends Activity implements View.OnClickListener {
 
     private static float density;
+    private static List<QuestionEntity> questions;
     public static List<Drawable> drawList;
     //当前已完成的题目计数
     private static int quiz_count;
@@ -76,11 +83,14 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
             R.id.match_third, R.id.match_four
     };
 
+    //题目
+    private static TextView mText;
+
     //答题计时
     private static int time_count = GameUtil.MATCH_TIME_INTERVAL;
     //对战双方血条
     private static ProgressBar mLBar, mRBar;
-    private static TextView mText_sec, mText;
+    private static TextView mText_sec;
     //计时线程
     private Thread t = new Thread() {
         @Override
@@ -112,8 +122,7 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
             quiz_count++;
             if (quiz_count > QUIZ_NOM && quiz_count <= QUIZ_SUM) {
                 showExt();
-            }
-            else if (quiz_count > QUIZ_SUM)
+            } else if (quiz_count > QUIZ_SUM)
                 showResult();
             else {
                 mhandler.handleMessage(msg);
@@ -235,13 +244,23 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
             mText.setTypeface(tf);
             mLayout.invalidate();
             mLayout.startAnimation(anim);
-            for (int i = 0; i < btnId.length; i++) {
-                mAnswer[i] = (ListButton) mLayout.findViewById(btnId[i]);
-                mAnswer[i].setOnClickListener(listener.get());
+
+            QuestionEntity question = questions.get(quiz_count - 1);
+            List<Method> methods = randomOptions();
+            try {
+                if (methods != null)
+                    for (int i = 0; i < btnId.length; i++) {
+                        mAnswer[i] = (ListButton) mLayout.findViewById(btnId[i]);
+                        mAnswer[i].setOnClickListener(listener.get());
+                        mAnswer[i].setText((String) methods.get(i).invoke(question));
+                    }
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
             }
             /**
              * 在这里设置下一道题的题干和选项
              */
+
         }
     }
 
@@ -284,15 +303,15 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
         int width = mLayout.getWidth();
         int height = mLayout.getHeight();
-        int widthSpec = View.MeasureSpec.makeMeasureSpec(width,View.MeasureSpec.EXACTLY);
-        int heightSpec = View.MeasureSpec.makeMeasureSpec(height,View.MeasureSpec.EXACTLY);
+        int widthSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
+        int heightSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
         mLayout.measure(widthSpec, heightSpec);
         mLayout.layout(0, 0, mLayout.getMeasuredWidth(), mLayout.getMeasuredHeight());
         mLayout.setDrawingCacheEnabled(true);
         mLayout.buildDrawingCache();
-        Bitmap bitmap=Bitmap.createBitmap(mLayout.getDrawingCache(true));
+        Bitmap bitmap = Bitmap.createBitmap(mLayout.getDrawingCache(true));
         bitmap.setDensity((int) density);
-        Drawable drawable=new BitmapDrawable(null,bitmap);
+        Drawable drawable = new BitmapDrawable(null, bitmap);
         mLayout.destroyDrawingCache();
         drawList.add(drawable);
 
@@ -310,10 +329,29 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
     /**
      * 显示比赛结果
      */
-    private  void showResult() {
+    private void showResult() {
         Intent intent = new Intent();
         intent.setClass(this, ResultActivity.class);
         startActivityForResult(intent, 1);
+    }
+
+
+    private void parseJSON(String json) {
+        try {
+            JSONArray array = new JSONArray(json);
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject obj = array.getJSONObject(i);
+                QuestionEntity que = new QuestionEntity();
+                que.setText(obj.getString("text"));
+                que.setRight(obj.getString("right"));
+                que.setWrong1(obj.getString("wrong1"));
+                que.setWrong2(obj.getString("wrong2"));
+                que.setWrong3(obj.getString("wrong3"));
+                questions.add(que);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -330,6 +368,9 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
         time_count = 10;
         quiz_count = 1;
         answer_count = 0;
+
+        questions = new ArrayList<>();
+        parseJSON(getIntent().getStringExtra("json"));
         initView();
         t.start();
         mate.start();
@@ -340,6 +381,7 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
         mText = (TextView) findViewById(R.id.match_text);
         Typeface tf = Typeface.createFromAsset(getBaseContext().getAssets(), Utils.GAME_TTF);
         mText.setTypeface(tf);
+        mText.setText(questions.get(0).getText());
         mText_sec = (TextView) findViewById(R.id.match_sec);
         mText_sec.setText(TIME_INTERVAL + "");
 
@@ -359,14 +401,65 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
         mLeft_score = (TextView) view.findViewById(R.id.match_score);
 
         mAnswer = new ListButton[btnId.length];
-        for (int i = 0; i < btnId.length; i++) {
-            mAnswer[i] = (ListButton) findViewById(btnId[i]);
-            mAnswer[i].setOnClickListener(this);
+        QuestionEntity question = questions.get(0);
+        List<Method> queue = randomOptions();
+
+        try {
+            if (queue != null)
+                for (int i = 0; i < btnId.length; i++) {
+                    mAnswer[i] = (ListButton) findViewById(btnId[i]);
+                    mAnswer[i].setOnClickListener(this);
+                    mAnswer[i].setText((String) queue.get(i).invoke(question));
+                }
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
         }
 
         mLayout = (RelativeLayout) findViewById(R.id.match_frame);
         mLayout.setBackgroundColor(Utils.COLOR_BKG);
     }
+
+    /**
+     * 随机选项
+     *
+     * @return 获得选项方法
+     */
+
+    private static List<Method> randomOptions() {
+        try {
+            Random r = new Random();
+            List<Integer> list = new ArrayList<>();
+            List<Method> methods = new ArrayList<>();
+            while (list.size() < 4) {
+                int num = r.nextInt(4) - 1;
+                if (!list.contains(num)) {
+                    String name = "";
+                    list.add(num);
+                    switch (num) {
+                        case 0:
+                            name = "getRight";
+                            break;
+                        case 1:
+                            name = "getWrong1";
+                            break;
+                        case 2:
+                            name = "getWrong2";
+                            break;
+                        case 3:
+                            name = "getWrong3";
+                            break;
+                    }
+                    Method m = Class.forName("QuestionEntity").getDeclaredMethod(name);
+                    methods.add(m);
+                }
+            }
+            return methods;
+        } catch (ClassNotFoundException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     @Override
     public void onClick(View v) {

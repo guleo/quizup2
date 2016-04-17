@@ -20,6 +20,7 @@ import com.example.frank.util.Utils;
 
 /**
  * Created by frank on 2016/1/27.
+ * 游戏主界面
  */
 public class MainActivity extends Activity implements View.OnClickListener{
 
@@ -34,6 +35,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private ImageButton mSet;
     private RoundImageView mHeadImage,mSHeadImage;
 
+    private TextView mTitle;
     private boolean hasHeaderAndFooter = true;
     private boolean isFastScroll = true;
     private boolean addPadding;
@@ -83,6 +85,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
         mExListView = (PinnedSectionListView) findViewById(R.id.expand_list);
         mHeadImage = (RoundImageView) findViewById(R.id.image_head_cur);
         mSHeadImage = (RoundImageView) findViewById(R.id.smallHead);
+        mTitle = (TextView) findViewById(R.id.textView);
+        if (LoginActivity.entity != null)
+        mTitle.setText(LoginActivity.entity.getUsername());
         if (LoginActivity.HeadDrawabale != null) {
             mHeadImage.setImageDrawable(LoginActivity.HeadDrawabale);
             mSHeadImage.setImageDrawable(LoginActivity.HeadDrawabale);

@@ -14,7 +14,6 @@
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="frank"
             android:textColor="@android:color/white"
             android:id="@+id/textView"
             android:layout_centerVertical="true"

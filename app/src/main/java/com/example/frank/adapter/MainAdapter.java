@@ -38,12 +38,11 @@ public class MainAdapter extends BaseExpandableListAdapter implements SectionInd
     public MainAdapter(Context context, Item[] sections) {
         this.context = context;
         tf = Typeface.createFromAsset(context.getAssets(), Utils.GAME_TTF);
+        generateDataset();
         if (sections != null)
             for (Item i : sections)
                 this.data.add(i);
         mInflater = LayoutInflater.from(context);
-        generateDataset();
-
     }
 
 
@@ -179,6 +178,9 @@ public class MainAdapter extends BaseExpandableListAdapter implements SectionInd
         match_rand = (Button) convertView.findViewById(R.id.match_rand);
         match_pc.setOnClickListener(this);
         match_rand.setOnClickListener(this);
+        String firstClass = data.get(item.sectionPosition).getText();
+        match_pc.setTag(new ClassInfo(firstClass,item.getText()));
+        match_rand.setTag(new ClassInfo(firstClass,item.getText()));
         view.setBackgroundColor(parent.getResources().getColor(COLORS[item.sectionPosition % COLORS.length]));
         return convertView;
     }
@@ -221,8 +223,37 @@ public class MainAdapter extends BaseExpandableListAdapter implements SectionInd
         switch (v.getId()) {
             case R.id.match_rand:
                 intent.setClass(context, MateActivity.class);
+                ClassInfo info = (ClassInfo) v.getTag();
+                intent.putExtra("firstClass", info.getFirstClass());
+                intent.putExtra("subClass", info.getSubClass());
                 context.startActivity(intent);
                 break;
+            case R.id.match_pc:
+                intent.setClass(context, MateActivity.class);
+//                ClassInfo info = (ClassInfo) v.getTag();
+//                intent.putExtra("firstClass", info.getFirstClass());
+//                intent.putExtra("subClass", info.getSubClass());
+//                context.startActivity(intent);
+                break;
+        }
+    }
+
+    private class ClassInfo {
+        private String firstClass;
+        private String subClass;
+
+        public String getFirstClass() {
+            return firstClass;
+        }
+
+        public String getSubClass() {
+            return subClass;
+        }
+
+        public ClassInfo(String firstClass, String subClass) {
+
+            this.firstClass = firstClass;
+            this.subClass = subClass;
         }
     }
 }

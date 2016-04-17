@@ -108,6 +108,10 @@ public class RoundImageView extends ImageView {
         mBitmap = getDrawableBitmap(drawable);
     }
 
+
+    public void setMovie(Movie movie) {
+        mov = movie;
+    }
     private Bitmap getDrawableBitmap(Drawable drawable) {
         if (drawable == null)
             return null;
@@ -122,6 +126,7 @@ public class RoundImageView extends ImageView {
         if (drawable instanceof BitmapDrawable) {
             mBitmap = ((BitmapDrawable) drawable).getBitmap();
         }
+
         return mBitmap;
     }
 

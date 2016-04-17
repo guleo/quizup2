@@ -11,7 +11,7 @@ import java.security.NoSuchAlgorithmException;
  * Created by frank on 2016/1/31.
  */
 public class Utils {
-    public static final String HTTP_URL = "http://192.168.20.108:8080/";
+    public static final String HTTP_URL = "http://192.168.20.130:8080/";
     public static final int VERSION = 1;
     public static final String ACTIVITY_PACKAGE_PATH = "com.example.frank.activity";
     public static final String GAME_TTF = "tu.ttf";
@@ -48,9 +48,7 @@ public class Utils {
             byte s[] = m.digest();
             // m.digest(inputText.getBytes("UTF8"));
             return hex(s);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return encryptText;

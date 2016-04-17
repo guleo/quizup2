@@ -1,18 +1,16 @@
 package com.example.frank.activity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.animation.AlphaAnimation;
 import android.widget.LinearLayout;
 import com.example.frank.test.R;
-import com.example.frank.util.GameUtil;
 import com.example.frank.util.SoundUtil;
-import org.cocos2d.sound.SoundEngine;
 
 /**
  * Created by frank on 2016/2/17.
+ * 自测匹配对战页面
  */
 public class MatchExtActivity extends Activity {
 
