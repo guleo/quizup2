@@ -26,7 +26,6 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
@@ -366,9 +365,9 @@ public class PinnedSectionListView extends ExpandableListView {
         if (BuildConfig.DEBUG && adapter != null) {
             if (!(adapter instanceof PinnedSectionListAdapter))
                 throw new IllegalArgumentException("Does your adapter implement PinnedSectionListAdapter?");
-            if (mAdapter.getGroupCount() < 2)
-                throw new IllegalArgumentException("Does your adapter handle at least two types" +
-                        " of views in getViewTypeCount() method: items and sections?");
+//            if (mAdapter.getGroupCount() < 2)
+//                throw new IllegalArgumentException("Does your adapter handle at least two types" +
+//                        " of views in getViewTypeCount() method: items and sections?");
 
         }
 

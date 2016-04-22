@@ -44,6 +44,7 @@ import java.net.URL;
 public class MateActivity extends Activity {
 
     private int duration = 3500;
+    private String url_rival;
     private static final String HTTP_SERVLET = Utils.HTTP_URL + "match";
     private String rival;
     public static Drawable rivalDrawable;
@@ -131,6 +132,7 @@ public class MateActivity extends Activity {
                         Bitmap bitmap = BitmapFactory.decodeStream(con.getInputStream());
                         rivalDrawable = new BitmapDrawable(null, bitmap);
                         rival = obj.getString("rival");
+                        url_rival = obj.getString("url_rival");
                         Thread.sleep(2000);
                         final JSONArray a = new JSONArray(obj.getString("questions"));
                         questions = a.toString();
@@ -178,6 +180,9 @@ public class MateActivity extends Activity {
                             public void run() {
                                 Intent intent = new Intent(getBaseContext(), MatchRandActivity.class);
                                 intent.putExtra("json", questions);
+                                intent.putExtra("rival", rival);
+                                intent.putExtra("url_rival",url_rival);
+                                Log.d("url_rival",url_rival);
                                 startActivity(intent);
                             }
                         }, 2500);
