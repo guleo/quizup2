@@ -3,6 +3,7 @@ package com.example.frank.activity;
 import android.app.Activity;
 import android.graphics.*;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -11,16 +12,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.*;
 import android.widget.*;
+import com.example.frank.dialog.SweetAlertDialog;
 import com.example.frank.test.R;
+import com.example.frank.ui.RoundImageView;
+import com.example.frank.util.GameUtil;
 import com.example.frank.util.SoundUtil;
 import com.example.frank.util.Utils;
-import org.cocos2d.sound.SoundEngine;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by frank on 2016/2/17.
+ * 结果页面
  */
 public class ResultActivity extends Activity implements View.OnTouchListener {
 
@@ -31,12 +41,12 @@ public class ResultActivity extends Activity implements View.OnTouchListener {
     private int middle;
     private ImageView view_un, view_ck;
     private ImageView imageDot[];
-    private TextView mResult;
     private int index = 0;
     private float downX, upX;
-    private final float offSet = 100;
     private ImageSwitcher mSwitcher;
     private List<Drawable> imageList;
+    private int time, user_score;
+    private String result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +56,11 @@ public class ResultActivity extends Activity implements View.OnTouchListener {
         imageList.addAll(MatchRandActivity.drawList);
         initView();
         initAnim();
+        int mode = getIntent().getIntExtra("type", -1);
+        if (mode == GameUtil.MATCH_RAND_MODE)
+            new ResultTask().execute();
         SoundUtil.playMusic(this, LoginActivity.setEntity);
-        SoundUtil.playEffect(this, LoginActivity.setEntity,null);
+        SoundUtil.playEffect(this, LoginActivity.setEntity, null);
     }
 
     private void initAnim() {
@@ -91,6 +104,31 @@ public class ResultActivity extends Activity implements View.OnTouchListener {
 
     private void initView() {
 
+        RoundImageView leftHead = (RoundImageView) findViewById(R.id.view);
+        leftHead.setImageDrawable(LoginActivity.HeadDrawabale);
+
+        TextView user = (TextView) findViewById(R.id.textView4);
+        user.setText(LoginActivity.entity.getUsername());
+
+        TextView rival = (TextView) findViewById(R.id.textView5);
+        rival.setText(getIntent().getStringExtra("rival"));
+
+        RoundImageView rightHead = (RoundImageView) findViewById(R.id.view2);
+        rightHead.setImageDrawable(MateActivity.rivalDrawable);
+
+        TextView right_count = (TextView) findViewById(R.id.right_count);
+        right_count.setText(getIntent().getIntExtra("right_count", 0) + "");
+
+        TextView score = (TextView) findViewById(R.id.score);
+        user_score = Integer.parseInt(getIntent().getStringExtra("score_user"));
+        score.setText(user_score + "");
+
+        TextView time_count = (TextView) findViewById(R.id.time_count);
+        user_score = Integer.parseInt(getIntent().getStringExtra("score_user"));
+
+        time = getIntent().getIntExtra("time", 0);
+        time_count.setText(time + "");
+
         imageDot = new ImageView[imageList.size()];
         for (int i = 0; i < imageDot.length; i++) {
             imageDot[i] = new ImageView(this);
@@ -113,8 +151,10 @@ public class ResultActivity extends Activity implements View.OnTouchListener {
             }
         });
         mSwitcher.setImageDrawable(imageList.get(0));
-        mResult = (TextView) findViewById(R.id.match_result);
+        TextView mResult = (TextView) findViewById(R.id.match_result);
         Typeface tf = Typeface.createFromAsset(getAssets(), Utils.GAME_TTF);
+        result = getIntent().getStringExtra("result");
+        mResult.setText(result);
         mResult.setTypeface(tf);
 
         mPager = (ViewPager) findViewById(R.id.gallery);
@@ -174,8 +214,8 @@ public class ResultActivity extends Activity implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        int cur = index;
-        int pre = cur;
+        int cur;
+        int pre;
 
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             if (mSwitcher.getParent() instanceof ScrollView)
@@ -188,6 +228,7 @@ public class ResultActivity extends Activity implements View.OnTouchListener {
             if (mSwitcher.getParent() instanceof ScrollView)
                 mSwitcher.getParent().requestDisallowInterceptTouchEvent(true);
             //左移
+            float offSet = 100;
             if (downX - upX >= offSet && index < imageList.size() - 1) {
                 index++;
                 if (index == middle) {
@@ -214,7 +255,7 @@ public class ResultActivity extends Activity implements View.OnTouchListener {
             if (upX - downX >= offSet && index > 0) {
                 index--;
                 if (index == middle) {
-                    pre = index+1;
+                    pre = index + 1;
                     cur = 0;
                 } else if (index < middle - 1) {
                     pre = index + 2;
@@ -242,9 +283,48 @@ public class ResultActivity extends Activity implements View.OnTouchListener {
         setResult(0);
         finish();
     }
+
     @Override
     protected void onPause() {
         SoundUtil.pauseMusic(this, LoginActivity.setEntity);
         super.onPause();
+    }
+
+    private class ResultTask extends AsyncTask {
+
+        @Override
+        protected Boolean doInBackground(Object[] params) {
+            String servlet = Utils.HTTP_URL + "result";
+            try {
+                URL url = new URL(servlet);
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setDoOutput(true);
+                con.setDoInput(true);
+                DataOutputStream writer = new DataOutputStream(con.getOutputStream());
+                String send = "username=" + LoginActivity.entity.getUsername() +
+                        "&time=" + time + "&score=" + user_score + "&result=" + result;
+                writer.write(send.getBytes());
+                BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                return Boolean.parseBoolean(reader.readLine());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            boolean isSend = Boolean.parseBoolean(o.toString());
+            if (!isSend) {
+                SweetAlertDialog d = new SweetAlertDialog(ResultActivity.this, SweetAlertDialog.ERROR_TYPE);
+                d.setTitleText("连接断开，请重新登录");
+                d.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        new ResultTask().execute();
+                    }
+                });
+            }
+        }
     }
 }

@@ -94,7 +94,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
         }
         //设置图标为不显示状态
         mExListView.setGroupIndicator(null);
-
     }
 
     @Override

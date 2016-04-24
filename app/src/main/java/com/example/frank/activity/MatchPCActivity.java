@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -21,7 +20,6 @@ import android.view.animation.ScaleAnimation;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.example.frank.dialog.SweetAlertDialog;
 import com.example.frank.test.R;
 import com.example.frank.ui.ListButton;
 import com.example.frank.ui.RoundImageView;
@@ -32,42 +30,29 @@ import com.example.model.QuestionEntity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-
 /**
- * Created by frank on 2016/2/11.
- * 随机匹配时的游戏界面
+ * Created by frank on 2016/4/24.
+ * 游戏自测界面
  */
-public class MatchRandActivity extends Activity implements View.OnClickListener {
-
-    private static final String HTTP_SERVLET = Utils.HTTP_URL + "answer";
+public class MatchPCActivity extends Activity implements View.OnClickListener {
+    private static final String HTTP_SERVLET = Utils.HTTP_URL + "test";
     private static float density;
-    private static String rival;
-    private static boolean isRight;
     private static List<QuestionEntity> questions;
     public static List<Drawable> drawList;
     //当前已完成的题目计数
     private static int quiz_count;
-    private static TextView mLeft_right, mRight_right;
-    private static TextView mLeft_score, mRight_score;
+    private static TextView mLeft_right;
+    private static TextView mLeft_score;
     private static RelativeLayout mLayout;
     private static boolean timer_count;
-    //双方答题的计数
-    private static int answer_count;
+
     //用户总用时
     private static int time_user_count;
     //用户答对题数
@@ -76,25 +61,20 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
     private static int answer_right = 1;
     //答题时间
     private final int TIME_INTERVAL = GameUtil.MATCH_TIME_INTERVAL;
-    //总分值
-    private final int PROGRESS_MAX = GameUtil.MATCH_RAND_SCORE_SUM;
+
     //题目总数
-    private static final int QUIZ_SUM = GameUtil.MATCH_RAND_QUIZ_SUM;
-    //普通题目的总数
-    private static final int QUIZ_NOM = GameUtil.MATCH_RAND_QUIZ_NOM;
+    private static final int QUIZ_SUM = GameUtil.MATCH_PC_QUIZ_SUM;
+
     //普通题目的分值
-    private static final int PROGRESS_NOM = GameUtil.MATCH_RAND_SCORE_NUM;
-    //压轴题目的分值
-    private static final int PROGRESS_EXT = GameUtil.MATCH_RAND_SCORE_EXT;
+    private static final int PROGRESS_NOM = GameUtil.MATCH_PC_SCORE_NUM;
+
     //显示题目的模式
     private static int mode;
     //handler处理的种类
     private final static String TIME = "time";
     private final static String MYANSWER = "myAnswer";
-    private final static String MATEANSWER = "mateAnswer";
     private final static String NEXT = "next";
     private final static String ANSWER = "answer";
-    private final static String RUNAWAY = "runaway";
     //选项控件
     private static ListButton mAnswer[];
     //选项id
@@ -110,44 +90,17 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
     private static int time_count = GameUtil.MATCH_TIME_INTERVAL;
     //用户答题计时
     private static int time_answer;
-    //对战双方血条
-    private static ProgressBar mLBar, mRBar;
     private static TextView mText_sec;
-    //对手的url
-    private static String url_rival;
-    //对手的分数
-    private static int score_rival;
+
     //用户答一题的计分
     private static int s;
 
-    //发送答案线程
-    private static class sendThread extends Thread {
-        @Override
-        public void run() {
-            try {
-                URL url = new URL(HTTP_SERVLET);
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setDoInput(true);
-                con.setDoOutput(true);
-                DataOutputStream output = new DataOutputStream(con.getOutputStream());
-                String send = "username=" + LoginActivity.entity.getUsername() +
-                        "&rival=" + rival + "&url=" + url_rival + "&right=" + isRight +
-                        "&score=" + s;
-                output.write(send.getBytes());
-                BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                url_rival = reader.readLine();
-                reader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     //计时线程
     private Thread t = new Thread() {
         @Override
         public void run() {
-            if (timer_count && answer_count < 2) {
+            if (timer_count) {
                 if (time_count >= 0) {
                     if (timer_count) {
                         Message msg = new Message();
@@ -158,15 +111,9 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
                     time_count -= 1;
                     mhandler.postDelayed(this, 1000);
                 }
-                if (time_count == -1 && answer_count >= 1) {
+                if (time_count == -1) {
                     timer_count = false;
                     mhandler.postDelayed(next, 2500);
-                }
-                if (time_count == -5) {
-                    timer_count = false;
-                    Message msg = new Message();
-                    msg.obj = RUNAWAY;
-                    mhandler.sendMessage(msg);
                 }
             }
         }
@@ -180,9 +127,7 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
             msg.obj = NEXT;
 
             quiz_count++;
-            if (quiz_count > QUIZ_NOM && quiz_count <= QUIZ_SUM) {
-                showExt();
-            } else if (quiz_count > QUIZ_SUM)
+            if (quiz_count > QUIZ_SUM)
                 showResult();
             else {
                 mhandler.handleMessage(msg);
@@ -197,53 +142,6 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
         }
     };
 
-
-    //监听对手答题的线程
-    private Thread mate = new Thread() {
-        @Override
-        public void run() {
-            /**
-             * 添加对手已选择的代码
-             */
-            int arg1 = 0;
-            try {
-                ServerSocket s = new ServerSocket(10000);
-                Socket socket = s.accept();
-                BufferedReader r = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                String info = r.readLine();
-                int index = info.lastIndexOf(",");
-                Log.d("index", index + "");
-                String right = info.substring(0, index);
-                arg1 = Boolean.parseBoolean(right) ? 1 : 0;
-                if (arg1 == 1)
-                    score_rival = Integer.parseInt(info.substring(index + 1));
-                Log.d("score_rival", score_rival + "");
-                r.close();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            answer_count++;
-            Message msg = new Message();
-            msg.obj = MATEANSWER;
-            msg.arg1 = arg1;
-            Log.d("answer_count", answer_count + "");
-            mhandler.sendMessage(msg);
-            while (true) {
-                if (answer_count == 2) {
-                    //继续监听，直到双方都已选择
-                    Message msg1 = new Message();
-                    msg1.obj = ANSWER;
-                    msg1.arg1 = 0;
-                    mhandler.sendMessage(msg1);
-                    mhandler.postDelayed(next, 2500);
-                    break;
-                }
-                if (!timer_count)
-                    break;
-            }
-        }
-    };
 
     //负责ui更新
     private final Handler mhandler = new MatchHandler(this, this);
@@ -262,11 +160,8 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
         public void handleMessage(Message msg) {
             if (msg.obj == MYANSWER) {
                 if (msg.arg1 == answer_right) {
-                    isRight = true;
                     right_count++;
                     s = GameUtil.generateScore(time_answer, mode);
-                    mRBar.incrementProgressBy(s);
-                    mRBar.invalidate();
                     mAnswer[msg.arg1].setButtonColor(GameUtil.MATCH_COLOR_RIGHT);
                     mAnswer[msg.arg1].setTextColor(Color.WHITE);
                     showAdd(mLeft_right, true, s);
@@ -275,30 +170,13 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
                     mLeft_score.setText(score + "");
                     mLeft_score.setTextColor(Color.GREEN);
                 } else {
-                    isRight = false;
                     SoundUtil.playViberate(context.get(), LoginActivity.setEntity);
                     mAnswer[msg.arg1].setButtonColor(Color.RED);
                     mLeft_score.setTextColor(Color.RED);
                     showAdd(mLeft_right, false, 0);
                 }
-                new sendThread().start();
             }
-            if (msg.obj == MATEANSWER) {
-                /**
-                 * 添加获取对手的选择代码
-                 */
-                if (msg.arg1 == 1) {
-                    mLBar.incrementProgressBy(score_rival);
-                    showAdd(mRight_right, true, score_rival);
-                    int score = Integer.parseInt(String.valueOf(mRight_score.getText()));
-                    score += score_rival;
-                    mRight_score.setText(score + "");
-                    mRight_score.setTextColor(Color.GREEN);
-                } else {
-                    mRight_score.setTextColor(Color.RED);
-                    showAdd(mRight_right, false, 0);
-                }
-            }
+
 
             if (msg.obj == TIME || msg.obj == ANSWER) {
                 if (msg.arg1 >= 0) {
@@ -315,17 +193,6 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
                 showNext();
             }
 
-            if (msg.obj == RUNAWAY) {
-                SweetAlertDialog dialog = new SweetAlertDialog(MatchRandActivity.this,SweetAlertDialog.WARNING_TYPE);
-                dialog.setTitleText("对手逃跑了...");
-                dialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        onBackPressed();
-                    }
-                });
-                dialog.show();
-            }
         }
 
 
@@ -333,56 +200,12 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
          * 显示下一题
          */
         private void showNext() {
-            new Thread() {
-                @Override
-                public void run() {
-                    int arg1 = 0;
-                    try {
-                        ServerSocket s = new ServerSocket(10000);
-                        Socket socket = s.accept();
-                        BufferedReader r = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                        String info = r.readLine();
-                        int index = info.lastIndexOf(",");
-                        Log.d("index", index + "");
-                        String right = info.substring(0, index);
-                        arg1 = Boolean.parseBoolean(right) ? 1 : 0;
-                        if (arg1 == 1)
-                            score_rival = Integer.parseInt(info.substring(index + 1));
-                        Log.d("score_rival", score_rival + "");
-                        r.close();
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    answer_count++;
-                    Message msg = new Message();
-                    msg.obj = MATEANSWER;
-                    msg.arg1 = arg1;
-                    Log.d("answer_count", answer_count + "");
-                    sendMessage(msg);
-                    while (true) {
-                        if (answer_count == 2) {
-                            //继续监听，直到双方都已选择
-                            Message msg1 = new Message();
-                            msg1.obj = ANSWER;
-                            msg1.arg1 = 0;
-                            sendMessage(msg1);
-                            postDelayed(next, 2500);
-                            break;
-                        }
-                        if (!timer_count)
-                            break;
-                    }
-                }
-            }.start();
 
             time_count = GameUtil.MATCH_TIME_INTERVAL;
-            answer_count = 0;
             mText_sec.setText(time_count + "");
             mText_sec.setTextColor(context.get().getResources()
                     .getColor(android.R.color.holo_orange_light));
             mLeft_score.setTextColor(Color.WHITE);
-            mRight_score.setTextColor(Color.WHITE);
             AlphaAnimation anim = new AlphaAnimation(0f, 1f);
             anim.setDuration(1500);
 
@@ -437,23 +260,12 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
         }
     }
 
-    /**
-     * 显示分数加倍提醒
-     */
-    private void showExt() {
-        mode = PROGRESS_EXT;
-        Intent intent = new Intent();
-        intent.setClass(this, MatchExtActivity.class);
-        startActivityForResult(intent, 0);
-    }
-
 
     /**
      * 显示正确的答案
      */
     private static void showAnswer() {
-        score_rival = 0;
-        Log.d("right", answer_right + "");
+
         mAnswer[answer_right].setButtonColor(GameUtil.MATCH_COLOR_RIGHT);
         //将view 转换为 Drawable
         mLayout.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
@@ -490,19 +302,9 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
         Intent intent = new Intent();
         intent.setClass(this, ResultActivity.class);
         int left = Integer.parseInt(String.valueOf(mLeft_score.getText()));
-        int right = Integer.parseInt(String.valueOf(mRight_score.getText()));
-        String result;
-        if (left > right)
-            result = GameUtil.SHOW_SUC;
-        else if (left == right)
-            result = GameUtil.SHOW_DRAW;
-        else
-            result = GameUtil.SHOW_FAIL;
-        intent.putExtra("type", GameUtil.MATCH_RAND_MODE);
-        intent.putExtra("rival", rival);
-        intent.putExtra("result", result);
+
+        intent.putExtra("type", GameUtil.MATCH_PC_MODE);
         intent.putExtra("score_user", String.valueOf(left));
-        intent.putExtra("score_rival", String.valueOf(right));
         intent.putExtra("time", time_user_count);
         intent.putExtra("right_count", right_count);
         startActivityForResult(intent, 1);
@@ -540,16 +342,13 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
         timer_count = true;
         time_count = 10;
         quiz_count = 1;
-        answer_count = 0;
         right_count = 0;
         time_user_count = 0;
         mode = PROGRESS_NOM;
-        url_rival = getIntent().getStringExtra("url_rival");
         questions = new ArrayList<>();
         parseJSON(getIntent().getStringExtra("json"));
         initView();
         t.start();
-        mate.start();
     }
 
     private void initView() {
@@ -561,29 +360,15 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
         mText_sec = (TextView) findViewById(R.id.match_sec);
         mText_sec.setText(TIME_INTERVAL + "");
 
-        View view = findViewById(R.id.match_right);
-        mRBar = (ProgressBar) view.findViewById(R.id.match_bar);
-        mRBar.setMax(PROGRESS_MAX);
-        tf = Typeface.createFromAsset(getBaseContext().getAssets(), Utils.SCORE_TTF);
-        mRight_right = (TextView) view.findViewById(R.id.match_add);
-        mRight_right.setTypeface(tf);
-        mRight_score = (TextView) view.findViewById(R.id.match_score);
-        RoundImageView mRight = (RoundImageView) view.findViewById(R.id.match_view);
-        mRight.setImageDrawable(MateActivity.rivalDrawable);
-        TextView mRightUser = (TextView) view.findViewById(R.id.textView1);
-        rival = getIntent().getStringExtra("rival");
 
-        mRightUser.setText(rival);
-
-        view = findViewById(R.id.match_left);
-        mLBar = (ProgressBar) view.findViewById(R.id.match_bar);
-        mRBar.setMax(PROGRESS_MAX);
-        mLeft_right = (TextView) view.findViewById(R.id.match_add);
+        ProgressBar mLBar = (ProgressBar) findViewById(R.id.match_bar);
+        mLBar.setVisibility(View.GONE);
+        mLeft_right = (TextView) findViewById(R.id.match_add);
         mLeft_right.setTypeface(tf);
-        mLeft_score = (TextView) view.findViewById(R.id.match_score);
-        RoundImageView mLeft = (RoundImageView) view.findViewById(R.id.match_view);
+        mLeft_score = (TextView) findViewById(R.id.match_score);
+        RoundImageView mLeft = (RoundImageView) findViewById(R.id.match_view);
         mLeft.setImageDrawable(LoginActivity.HeadDrawabale);
-        TextView mLeftUser = (TextView) view.findViewById(R.id.textView1);
+        TextView mLeftUser = (TextView) findViewById(R.id.textView1);
         mLeftUser.setText(LoginActivity.entity.getUsername());
         mAnswer = new ListButton[btnId.length];
         QuestionEntity question = questions.get(0);
@@ -652,7 +437,6 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
         for (int i = 0; i < btnId.length; i++) {
             mAnswer[i].setClickable(false);
             if (v.getId() == btnId[i]) {
-                answer_count++;
                 Message msg = new Message();
                 msg.obj = MYANSWER;
                 msg.arg1 = i;

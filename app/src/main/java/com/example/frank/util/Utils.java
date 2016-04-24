@@ -17,6 +17,8 @@ public class Utils {
     public static final String GAME_TTF = "tu.ttf";
     public static final String SCORE_TTF = "SnapITC.TTF";
     public static final String SQLITE_DATABASE = "quiz.db";
+    public static final int QUESTION_SERVLET_CLASS = 0;
+    public static final int QUESTION_SERVLET_QUESTION = 1;
     public static final int COLOR_BKG = Color.rgb(47,47,47);
 
     //获得当前的activity

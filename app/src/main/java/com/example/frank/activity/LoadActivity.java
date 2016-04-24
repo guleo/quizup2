@@ -13,6 +13,7 @@ import com.example.frank.dialog.SweetAlertDialog;
 import com.example.frank.test.R;
 import com.example.frank.ui.ProgressHelper;
 import com.example.frank.ui.ProgressWheel;
+import com.example.frank.util.GameUtil;
 import com.example.frank.util.SoundUtil;
 import com.example.frank.util.Utils;
 import org.json.JSONArray;
@@ -35,9 +36,10 @@ import java.util.List;
 public class LoadActivity extends Activity {
 
     private static final String HTTP_SERVLET = Utils.HTTP_URL + "question";
-    private static final int GET_CLASS = 0;
     private JSONArray class_data;
     private Handler mHandler = new Handler();
+    private String questions = null;
+    private int mode = -1;
     public static List<List<String>> type = new ArrayList<>();
 
     @Override
@@ -74,22 +76,41 @@ public class LoadActivity extends Activity {
         @Override
         protected Object doInBackground(Object[] params) {
             try {
+                mode = getIntent().getIntExtra("mode", -1);
                 URL url = new URL(HTTP_SERVLET);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.setDoOutput(true);
                 con.setDoInput(true);
                 DataOutputStream writer = new DataOutputStream(con.getOutputStream());
-                String send = "type=" + GET_CLASS;
-                writer.write(send.getBytes());
-                BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                String info = reader.readLine();
-                //Log.d("info","info:" + info);
-                if (info != null) {
-                    class_data = new JSONArray(info);
-                    for (int i = 0; i < class_data.length(); i++) {
-                        type.add(getStringData(i));
+                if (mode == -1) {
+                    String send = "type=" + Utils.QUESTION_SERVLET_CLASS;
+                    writer.write(send.getBytes());
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    String info = reader.readLine();
+                    if (info != null) {
+                        class_data = new JSONArray(info);
+                        for (int i = 0; i < class_data.length(); i++) {
+                            type.add(getStringData(i));
+                        }
+                        return true;
                     }
-                    return true;
+                } else {
+                    String firstClass = getIntent().getStringExtra("firstClass");
+                    String subClass = getIntent().getStringExtra("subClass");
+                    String info = "username=" + LoginActivity.entity.getUsername() +
+                            "&firstClass=" + firstClass + "&subClass=" + subClass +
+                            "&type=" + Utils.QUESTION_SERVLET_QUESTION + "&num=" + GameUtil.MATCH_PC_QUIZ_SUM;
+                    Log.d("info", info);
+                    writer.write(info.getBytes());
+
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    String json = reader.readLine();
+                    if (json != null) {
+                        JSONObject obj = new JSONObject(json);
+                        final JSONArray a = new JSONArray(obj.getString("questions"));
+                        questions = a.toString();
+                        return true;
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -104,12 +125,14 @@ public class LoadActivity extends Activity {
         protected void onPostExecute(Object o) {
             if ((boolean) o) {
                 mHandler.postDelayed(new Runnable() {
-
                     @Override
                     public void run() {
                         LoadActivity.this.finish();
                         Intent intent = new Intent();
-                        intent.setClass(getApplicationContext(), MainActivity.class);
+                        if (mode == -1)
+                            intent.setClass(LoadActivity.this, MainActivity.class);
+                        else
+                            intent.setClass(LoadActivity.this, MatchPCActivity.class);
                         startActivity(intent);
                     }
                 }, 1000);

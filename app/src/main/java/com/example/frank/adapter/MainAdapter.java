@@ -15,6 +15,7 @@ import com.example.frank.test.R;
 import com.example.frank.ui.Item;
 import com.example.frank.ui.ListButton;
 import com.example.frank.ui.PinnedSectionListView;
+import com.example.frank.util.GameUtil;
 import com.example.frank.util.SoundUtil;
 import com.example.frank.util.Utils;
 
@@ -23,12 +24,13 @@ import java.util.List;
 
 /**
  * Created by frank on 2016/2/5.
+ * 用来配置主界面显示知识分类的适配器
  */
 public class MainAdapter extends BaseExpandableListAdapter implements SectionIndexer, PinnedSectionListView.PinnedSectionListAdapter, View.OnClickListener {
 
     private Context context;
     private ExpandableListView.OnGroupClickListener mListener;
-    private Button match_pc,match_rand;
+    private Button match_pc, match_rand;
     private List<Item> data = new ArrayList<>();
     private Item[] sections;
     private LayoutInflater mInflater;
@@ -58,7 +60,7 @@ public class MainAdapter extends BaseExpandableListAdapter implements SectionInd
     public void generateDataset() {
         final int sectionsNumber = LoadActivity.type.size();
         sections = new Item[sectionsNumber];
-        int  listPosition = 0;
+        int listPosition = 0;
         for (char i = 0; i < sectionsNumber; i++) {
             Item section = new Item(Item.SECTION, LoadActivity.type.get(i).get(0));
             section.sectionPosition = i;
@@ -120,6 +122,7 @@ public class MainAdapter extends BaseExpandableListAdapter implements SectionInd
             return null;
         return data.get(groupPosition);
     }
+
     @Override
     public long getGroupId(int groupPosition) {
         return groupPosition;
@@ -179,8 +182,8 @@ public class MainAdapter extends BaseExpandableListAdapter implements SectionInd
         match_pc.setOnClickListener(this);
         match_rand.setOnClickListener(this);
         String firstClass = data.get(item.sectionPosition).getText();
-        match_pc.setTag(new ClassInfo(firstClass,item.getText()));
-        match_rand.setTag(new ClassInfo(firstClass,item.getText()));
+        match_pc.setTag(new ClassInfo(firstClass, item.getText()));
+        match_rand.setTag(new ClassInfo(firstClass, item.getText()));
         view.setBackgroundColor(parent.getResources().getColor(COLORS[item.sectionPosition % COLORS.length]));
         return convertView;
     }
@@ -219,23 +222,20 @@ public class MainAdapter extends BaseExpandableListAdapter implements SectionInd
     @Override
     public void onClick(View v) {
         Intent intent = new Intent();
-        SoundUtil.playEffect(context, LoginActivity.setEntity,v);
+        SoundUtil.playEffect(context, LoginActivity.setEntity, v);
+        ClassInfo info = (ClassInfo) v.getTag();
+        intent.putExtra("firstClass", info.getFirstClass());
+        intent.putExtra("subClass", info.getSubClass());
         switch (v.getId()) {
             case R.id.match_rand:
                 intent.setClass(context, MateActivity.class);
-                ClassInfo info = (ClassInfo) v.getTag();
-                intent.putExtra("firstClass", info.getFirstClass());
-                intent.putExtra("subClass", info.getSubClass());
-                context.startActivity(intent);
                 break;
             case R.id.match_pc:
-                intent.setClass(context, MateActivity.class);
-//                ClassInfo info = (ClassInfo) v.getTag();
-//                intent.putExtra("firstClass", info.getFirstClass());
-//                intent.putExtra("subClass", info.getSubClass());
-//                context.startActivity(intent);
+                intent.setClass(context, LoadActivity.class);
+                intent.putExtra("mode", GameUtil.MATCH_PC_MODE);
                 break;
         }
+        context.startActivity(intent);
     }
 
     private class ClassInfo {
@@ -251,7 +251,6 @@ public class MainAdapter extends BaseExpandableListAdapter implements SectionInd
         }
 
         public ClassInfo(String firstClass, String subClass) {
-
             this.firstClass = firstClass;
             this.subClass = subClass;
         }
