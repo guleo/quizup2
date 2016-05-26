@@ -11,6 +11,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -25,6 +26,7 @@ import com.example.model.SetEntity;
 import com.example.model.UserLoginEntity;
 import com.example.persist.sqlite.LoginSQLiteHelper;
 import com.example.persist.sqlite.SetSQLiteHelper;
+import com.example.persist.sqlite.TestSQLiteHelper;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -41,7 +43,7 @@ import java.net.URL;
 
 public class LoginActivity extends Activity implements View.OnClickListener, SweetAlertDialog.OnSweetClickListener {
 
-    private static final String httpServlet = Utils.HTTP_URL + "login";
+    private String httpServlet;
     private static final int LOGIN_SUCCESS = 0;
     private static final int LOGIN_ERROR = 1;
     private static final int LOGIN_FAIL = 2;
@@ -86,6 +88,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Swe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        httpServlet = new Utils().getHttpUrl(LoginActivity.this) + "login";
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
@@ -123,8 +126,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Swe
                 mUsername.setEnabled(false);
                 mPwd.setEnabled(false);
             }
-        }
-        else if (dbHelper instanceof SetSQLiteHelper) {
+        } else if (dbHelper instanceof SetSQLiteHelper) {
             Cursor c = db.rawQuery(SetSQLiteHelper.FIND_SET_INFO, null);
             if (c.getCount() != 0) {
                 c.moveToFirst();
@@ -219,10 +221,21 @@ public class LoginActivity extends Activity implements View.OnClickListener, Swe
 
             if (username.trim().equals("") || password.trim().equals("")) {
                 return LOGIN_ERROR;
+            }
+            //测试修改服务器ip地址,在密码中修改。
+            else if (username.trim().equals("##test")) {
+                TestSQLiteHelper testHelper = new TestSQLiteHelper(LoginActivity.this, TestSQLiteHelper.CREATE_USER_TABLE, null, Utils.VERSION);
+                SQLiteDatabase db = testHelper.getWritableDatabase();
+                password = "http://" + password + ":8080/";
+                Log.d("pass", password);
+                db.execSQL(TestSQLiteHelper.DELETE_SERVER_IP);
+                db.execSQL(TestSQLiteHelper.INSERT_SERVER_IP,new Object[]{password});
+                return -3;
             } else {
                 try {
                     password = Utils.encrypt(password, null);
                     URL url = new URL(httpServlet);
+                    Log.d("URL", httpServlet);
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
                     con.setConnectTimeout(5000);
                     con.setDoOutput(true);
@@ -243,8 +256,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Swe
                             con.setRequestMethod("GET");
                             Bitmap bitmap = BitmapFactory.decodeStream(con.getInputStream());
                             HeadDrawabale = new BitmapDrawable(null, bitmap);
-                        }
-                        else HeadDrawabale = null;
+                        } else HeadDrawabale = null;
                         return LOGIN_SUCCESS;
                     } else {
                         return LOGIN_FAIL;

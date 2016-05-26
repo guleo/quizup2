@@ -18,7 +18,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.*;
+import java.net.ConnectException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 
 /**
  * Created by frank on 2016/3/1.
@@ -44,7 +47,7 @@ public class RegisterDialog extends Dialog implements View.OnClickListener {
 
     private Handler mHandler;
 
-    private static final String HttpServlet = Utils.HTTP_URL + "register";
+    private String HttpServlet;
 
     public RegisterDialog(Context context) {
         this(context, 0);
@@ -59,6 +62,7 @@ public class RegisterDialog extends Dialog implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
+        HttpServlet = new Utils().getHttpUrl(context) + "register";
         init();
 
         mHandler = new Handler() {
@@ -67,11 +71,9 @@ public class RegisterDialog extends Dialog implements View.OnClickListener {
                 super.dispatchMessage(msg);
                 if (msg.obj != REG_SUC)
                     Toast.makeText(context, (String) msg.obj, Toast.LENGTH_SHORT).show();
-//                else {
-//                     Intent intent = new Intent();
-//                     intent.setClass(context, MainActivity.class);
-//                     ActivityManager m = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-//                 }
+                else {
+                    RegisterDialog.this.dismiss();
+                 }
             }
         };
     }

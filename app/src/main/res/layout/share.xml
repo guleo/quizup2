@@ -35,19 +35,23 @@
 
     <EditText
             android:id="@+id/answer1"
-            style="@style/edit_right"/>
+            style="@style/edit_right"
+            android:maxLength="12"/>
 
     <EditText
             android:id="@+id/answer2"
-            style="@style/edit_error"/>
+            style="@style/edit_error"
+            android:maxLength="12"/>
 
     <EditText
             android:id="@+id/answer3"
-            style="@style/edit_error"/>
+            style="@style/edit_error"
+            android:maxLength="12"/>
 
     <EditText
             android:id="@+id/answer4"
-            style="@style/edit_error"/>
+            style="@style/edit_error"
+            android:maxLength="12"/>
 
     <com.example.frank.ui.ListButton
             android:id="@+id/post"

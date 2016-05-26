@@ -77,6 +77,8 @@
         </activity>
 
         <activity android:name="com.example.frank.activity.LoadActivity"/>
+        <activity android:name="com.example.frank.activity.MatchPCActivity"/>
+        <activity android:name="com.example.frank.activity.ClassActivity"/>
     </application>
 
     <uses-permission android:name="android.permission.VIBRATE"/>

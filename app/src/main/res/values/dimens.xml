@@ -39,4 +39,6 @@
     <dimen name="friend_list_head_radius">50dp</dimen>
     <dimen name="friend_list_height">70dp</dimen>
 
+    <dimen name="match_pc_text_size">40sp</dimen>
+    <dimen name="match_pc_text">40dp</dimen>
 </resources>

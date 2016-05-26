@@ -56,13 +56,14 @@ public class FriendActivity extends Activity implements View.OnClickListener, Se
     private List<UserFriendEntity> search;
     private BitmapDrawable drawable;
     private List<BitmapDrawable> heads = new ArrayList<>();
-    private static final String SHOW_USER_SERVLET = Utils.HTTP_URL + "friend";
+    private  String SHOW_USER_SERVLET;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.friend);
         initView();
+        SHOW_USER_SERVLET =new Utils().getHttpUrl(this) + "friend";
         SoundUtil.playMusic(this, LoginActivity.setEntity);
         new FriendTask().execute(SHOW_USER);
     }
@@ -134,12 +135,21 @@ public class FriendActivity extends Activity implements View.OnClickListener, Se
         switch (v.getId()) {
             case R.id.search_btn:
                 text = mEdit.getText().toString().trim();
-                if (!isFriend(text)) {
-                    d = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
-                    d.setTitleText("搜索中...");
-                    d.changeAlertType(SweetAlertDialog.PROGRESS_TYPE);
-                    d.show();
-                    new FriendTask().execute(FIND_USER, text);
+                if (text.equals("")) {
+                    mAdapter.setFriends(friends, heads);
+                    mAdapter.notifyDataSetChanged();
+                } else {
+                    int index = isFriend(text);
+                    if (index == -1) {
+                        d = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+                        d.setTitleText("搜索中...");
+                        d.changeAlertType(SweetAlertDialog.PROGRESS_TYPE);
+                        d.show();
+                        new FriendTask().execute(FIND_USER, text);
+                    } else {
+                        mAdapter.setFriends(friends.subList(index, index + 1), heads.subList(index, index + 1));
+                        mAdapter.notifyDataSetChanged();
+                    }
                 }
                 break;
             case R.id.add:
@@ -164,12 +174,13 @@ public class FriendActivity extends Activity implements View.OnClickListener, Se
         }
     }
 
-    private boolean isFriend(String name) {
-        for (UserFriendEntity u : friends) {
+    private int isFriend(String name) {
+        for (int i = 0; i < friends.size(); i++) {
+            UserFriendEntity u = friends.get(i);
             if (u.getUsername().equals(name))
-                return true;
+                return i;
         }
-        return false;
+        return -1;
     }
 
     @Override
@@ -231,8 +242,8 @@ public class FriendActivity extends Activity implements View.OnClickListener, Se
                         out.write(info.getBytes());
                         friends = getUserFriends(con.getInputStream());
                         if (friends != null)
-                        for (UserFriendEntity entity : friends)
-                            heads.add((BitmapDrawable) getHead(entity));
+                            for (UserFriendEntity entity : friends)
+                                heads.add((BitmapDrawable) getHead(entity));
                         break;
                     case ADD_USER:
                         info = "user=" + LoginActivity.entity.getUsername() +
@@ -290,7 +301,7 @@ public class FriendActivity extends Activity implements View.OnClickListener, Se
 
             String path = friend.getHead();
             if (path != null || !path.trim().equals("")) {
-                path = Utils.HTTP_URL + "img/" + path;
+                path = new Utils().getHttpUrl(FriendActivity.this) + "img/" + path;
                 try {
                     Log.d("img", path);
                     URL url = new URL(path);
@@ -298,6 +309,7 @@ public class FriendActivity extends Activity implements View.OnClickListener, Se
                     con.setDoInput(true);
                     con.setRequestMethod("GET");
                     Bitmap bitmap = BitmapFactory.decodeStream(con.getInputStream());
+                    con.disconnect();
                     return new BitmapDrawable(null, bitmap);
                 } catch (IOException e) {
                     e.printStackTrace();

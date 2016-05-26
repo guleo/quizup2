@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class LoadActivity extends Activity {
 
-    private static final String HTTP_SERVLET = Utils.HTTP_URL + "question";
+    private  String HTTP_SERVLET;
     private JSONArray class_data;
     private Handler mHandler = new Handler();
     private String questions = null;
@@ -46,6 +46,7 @@ public class LoadActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.load);
+        HTTP_SERVLET = new Utils().getHttpUrl(this) + "question";
         initView();
         new LoadTask(this).execute();
     }
@@ -131,8 +132,10 @@ public class LoadActivity extends Activity {
                         Intent intent = new Intent();
                         if (mode == -1)
                             intent.setClass(LoadActivity.this, MainActivity.class);
-                        else
+                        else {
                             intent.setClass(LoadActivity.this, MatchPCActivity.class);
+                            intent.putExtra("json",questions);
+                        }
                         startActivity(intent);
                     }
                 }, 1000);

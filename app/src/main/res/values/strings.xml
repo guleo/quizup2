@@ -23,6 +23,7 @@
     <string name="title_user">玩家数据</string>
     <string name="title_friend">好友信息</string>
     <string name="title_share">贡献一题</string>
+    <string name="title_select">选择主题</string>
     <string name="game_match">对战场数</string>
     <string name="game_score">平均得分</string>
 

@@ -32,6 +32,7 @@ import com.example.model.QuestionEntity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -54,7 +55,7 @@ import java.util.Random;
  */
 public class MatchRandActivity extends Activity implements View.OnClickListener {
 
-    private static final String HTTP_SERVLET = Utils.HTTP_URL + "answer";
+    private String HTTP_SERVLET;
     private static float density;
     private static String rival;
     private static boolean isRight;
@@ -110,6 +111,7 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
     private static int time_count = GameUtil.MATCH_TIME_INTERVAL;
     //用户答题计时
     private static int time_answer;
+    private static boolean isAnswer;
     //对战双方血条
     private static ProgressBar mLBar, mRBar;
     private static TextView mText_sec;
@@ -121,7 +123,7 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
     private static int s;
 
     //发送答案线程
-    private static class sendThread extends Thread {
+    private class sendThread extends Thread {
         @Override
         public void run() {
             try {
@@ -147,18 +149,23 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
     private Thread t = new Thread() {
         @Override
         public void run() {
-            if (timer_count && answer_count < 2) {
+            if (timer_count) {
                 if (time_count >= 0) {
-                    if (timer_count) {
-                        Message msg = new Message();
-                        msg.obj = TIME;
-                        msg.arg1 = time_count;
-                        mhandler.handleMessage(msg);
-                    }
+                    Message msg = new Message();
+                    msg.obj = TIME;
+                    msg.arg1 = time_count;
+                    mhandler.handleMessage(msg);
                     time_count -= 1;
                     mhandler.postDelayed(this, 1000);
                 }
-                if (time_count == -1 && answer_count >= 1) {
+
+                if (time_count == -1 && answer_count == 1 && !isAnswer || answer_count == 2) {
+                    if (!isAnswer) {
+                        Message msg = new Message();
+                        msg.obj = MYANSWER;
+                        msg.arg1 = -1;
+                        mhandler.sendMessage(msg);
+                    }
                     timer_count = false;
                     mhandler.postDelayed(next, 2500);
                 }
@@ -169,6 +176,7 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
                     mhandler.sendMessage(msg);
                 }
             }
+
         }
     };
 
@@ -316,7 +324,7 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
             }
 
             if (msg.obj == RUNAWAY) {
-                SweetAlertDialog dialog = new SweetAlertDialog(MatchRandActivity.this,SweetAlertDialog.WARNING_TYPE);
+                SweetAlertDialog dialog = new SweetAlertDialog(MatchRandActivity.this, SweetAlertDialog.WARNING_TYPE);
                 dialog.setTitleText("对手逃跑了...");
                 dialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
@@ -358,6 +366,7 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
                     Message msg = new Message();
                     msg.obj = MATEANSWER;
                     msg.arg1 = arg1;
+                    isAnswer = false;
                     Log.d("answer_count", answer_count + "");
                     sendMessage(msg);
                     while (true) {
@@ -530,11 +539,12 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        HTTP_SERVLET = new Utils().getHttpUrl(this) + "answer";
         SoundUtil.playMusic(this, LoginActivity.setEntity);
         setContentView(R.layout.match_rand);
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
+        isAnswer = false;
         density = dm.density;
         drawList = new ArrayList<>();
         timer_count = true;
@@ -653,6 +663,7 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
             mAnswer[i].setClickable(false);
             if (v.getId() == btnId[i]) {
                 answer_count++;
+                isAnswer = true;
                 Message msg = new Message();
                 msg.obj = MYANSWER;
                 msg.arg1 = i;
@@ -697,4 +708,9 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
         super.onResume();
     }
 
+    @Override
+    public void onBackPressed() {
+        this.finish();
+        timer_count = false;
+    }
 }

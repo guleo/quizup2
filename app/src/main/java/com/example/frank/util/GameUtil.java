@@ -33,6 +33,7 @@ public class GameUtil {
     public static final String SHOW_SUC = "YOU WIN";
     public static final String SHOW_FAIL = "YOU LOSE";
     public static final String SHOW_DRAW = "YOU DRAW";
+    public static final String SHOW_SCORE = "YOUR SCORE";
 
     /**
      * 分数计算模式

@@ -26,8 +26,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     private static final String EXIT_TEXT = "确定要退出吗?";
     private Intent intent;
-    private Button match_pc;
-    private Button match_rand;
     private ListView mListView;
     private MainAdapter mMainAdapter;
     private PinnedSectionListView mExListView;
@@ -40,7 +38,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private boolean isFastScroll = true;
     private boolean addPadding;
     private boolean isShadowVisible = true;
-    private int mDatasetUpdateCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

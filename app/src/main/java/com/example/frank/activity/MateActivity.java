@@ -45,10 +45,11 @@ public class MateActivity extends Activity {
 
     private int duration = 3500;
     private String url_rival;
-    private static final String HTTP_SERVLET = Utils.HTTP_URL + "match";
+    private String HTTP_SERVLET;
     private String rival;
     public static Drawable rivalDrawable;
     private SweetAlertDialog d;
+    private MatchTask task;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -76,6 +77,7 @@ public class MateActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mate);
         initView();
+        HTTP_SERVLET = new Utils().getHttpUrl(this) + "match";
         SoundUtil.playMusic(this, LoginActivity.setEntity);
         setProcess();
     }
@@ -93,7 +95,8 @@ public class MateActivity extends Activity {
     }
 
     private void setProcess() {
-        new MatchTask().execute();
+        task = new MatchTask();
+        task.execute();
     }
 
     private class MatchTask extends AsyncTask {
@@ -216,5 +219,6 @@ public class MateActivity extends Activity {
     public void onBackPressed() {
         super.onBackPressed();
         this.finish();
+        task.cancel(true);
     }
 }

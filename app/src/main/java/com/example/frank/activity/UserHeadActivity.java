@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import com.example.frank.dialog.SweetAlertDialog;
@@ -28,11 +27,12 @@ import java.net.URLEncoder;
  */
 public class UserHeadActivity extends Activity implements View.OnClickListener, SweetAlertDialog.OnSweetClickListener {
 
-    private static final String SERVLET = Utils.HTTP_URL + "head";
+    private String SERVLET ;
     private static final String POST_WAIT = "上传中...";
     private static final String POST_PASS = "上传成功";
     private static final String POST_FAIL = "上传失败";
-    //private static final String END = "\r\n";
+    private static final String POST_LARGE = "图片过大";
+    private static Bitmap temp;
     private Button mButton;
     private RoundImageView mHeadImage;
     private SweetAlertDialog dialog;
@@ -43,6 +43,7 @@ public class UserHeadActivity extends Activity implements View.OnClickListener, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_head);
         initView();
+        SERVLET = new Utils().getHttpUrl(this) + "head";
         SoundUtil.playMusic(this, LoginActivity.setEntity);
     }
 
@@ -99,11 +100,10 @@ public class UserHeadActivity extends Activity implements View.OnClickListener, 
                         "multipart/form-data;boundary=" + "*****");
                 DataOutputStream out = new DataOutputStream(con.getOutputStream());
                 String filePath = params[0].toString();
-                Log.d("username", LoginActivity.entity.getUsername());
                 filePath = filePath.substring(filePath.lastIndexOf(":") + 1);
                 String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
                 FileInputStream fout = new FileInputStream(filePath);
-
+                temp = BitmapFactory.decodeStream(fout);
                 out.writeBytes("--" + "*****" + "\r\n");
                 out.writeBytes("Content-Disposition: form-data; " +
                         "name=\"file1\";filename=\"" +
@@ -131,6 +131,9 @@ public class UserHeadActivity extends Activity implements View.OnClickListener, 
                 con.disconnect();
             } catch (IOException e) {
                 e.printStackTrace();
+            }catch (OutOfMemoryError e) {
+                temp = null;
+                return POST_LARGE;
             }
             return null;
         }
@@ -138,27 +141,29 @@ public class UserHeadActivity extends Activity implements View.OnClickListener, 
         @Override
         protected void onPostExecute(final Object o) {
             if (o != null) {
-                dialog.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
-                dialog.setTitleText(POST_PASS);
-                dialog.show();
-                dialog.showConfirmText(false);
+                switch ((String)o) {
+                    case POST_LARGE:
+                        dialog.setTitleText(POST_LARGE);
+                        dialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                        break;
+                    default:
+                        dialog.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+                        dialog.setTitleText(POST_PASS);
+                        dialog.show();
+                        dialog.showConfirmText(false);
 
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
                             dialog.dismiss();
-                            FileInputStream in = new FileInputStream(o.toString());
-                            Bitmap b = BitmapFactory.decodeStream(in);
-                            mHeadImage.setImageBitmap(b);
+                            mHeadImage.setImageBitmap(temp);
+                            temp = null;
                             LoginActivity.HeadDrawabale = (BitmapDrawable) mHeadImage.getDrawable();
                             mHeadImage.invalidate();
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
                         }
-
-                    }
-                }, 1000);
+                    }, 1000);
+                        break;
+                }
             } else {
                 dialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
                 dialog.setTitleText(POST_FAIL);

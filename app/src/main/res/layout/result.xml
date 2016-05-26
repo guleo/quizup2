@@ -92,8 +92,8 @@
                     <com.example.frank.ui.RoundImageView
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            android:src="@drawable/head1"
                             res:radius="25dp"
+                            android:src="@drawable/head"
                             android:id="@+id/view2"
                             android:layout_alignParentTop="true"
                             android:layout_toStartOf="@+id/textView5"/>

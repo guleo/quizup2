@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,13 +53,20 @@ public class ResultActivity extends Activity implements View.OnTouchListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.result);
+        int mode = getIntent().getIntExtra("type", -1);
         imageList = new ArrayList<>();
-        imageList.addAll(MatchRandActivity.drawList);
+        result = getIntent().getStringExtra("result");
+        if (mode == GameUtil.MATCH_RAND_MODE) {
+            new ResultTask().execute();
+            imageList.addAll(MatchRandActivity.drawList);
+        }
+        if (mode == GameUtil.MATCH_PC_MODE) {
+            imageList.addAll(MatchPCActivity.drawList);
+            ImageView image = (ImageView) findViewById(R.id.imageView6);
+            image.setVisibility(View.GONE);
+        }
         initView();
         initAnim();
-        int mode = getIntent().getIntExtra("type", -1);
-        if (mode == GameUtil.MATCH_RAND_MODE)
-            new ResultTask().execute();
         SoundUtil.playMusic(this, LoginActivity.setEntity);
         SoundUtil.playEffect(this, LoginActivity.setEntity, null);
     }
@@ -104,6 +112,7 @@ public class ResultActivity extends Activity implements View.OnTouchListener {
 
     private void initView() {
 
+        int mode = getIntent().getIntExtra("type", -1);
         RoundImageView leftHead = (RoundImageView) findViewById(R.id.view);
         leftHead.setImageDrawable(LoginActivity.HeadDrawabale);
 
@@ -113,9 +122,13 @@ public class ResultActivity extends Activity implements View.OnTouchListener {
         TextView rival = (TextView) findViewById(R.id.textView5);
         rival.setText(getIntent().getStringExtra("rival"));
 
+
         RoundImageView rightHead = (RoundImageView) findViewById(R.id.view2);
         rightHead.setImageDrawable(MateActivity.rivalDrawable);
-
+        if (mode == GameUtil.MATCH_PC_MODE) {
+            rival.setVisibility(View.GONE);
+            rightHead.setVisibility(View.GONE);
+        }
         TextView right_count = (TextView) findViewById(R.id.right_count);
         right_count.setText(getIntent().getIntExtra("right_count", 0) + "");
 
@@ -153,7 +166,6 @@ public class ResultActivity extends Activity implements View.OnTouchListener {
         mSwitcher.setImageDrawable(imageList.get(0));
         TextView mResult = (TextView) findViewById(R.id.match_result);
         Typeface tf = Typeface.createFromAsset(getAssets(), Utils.GAME_TTF);
-        result = getIntent().getStringExtra("result");
         mResult.setText(result);
         mResult.setTypeface(tf);
 
@@ -192,7 +204,7 @@ public class ResultActivity extends Activity implements View.OnTouchListener {
 
             @Override
             public Object instantiateItem(ViewGroup container, int position) {
-                // Log.d("count", position+"");
+                Log.d("count", position + "");
                 if (position == index) {
                     imageDot[position].setImageDrawable(view_ck.getDrawable());
                 } else {
@@ -232,11 +244,11 @@ public class ResultActivity extends Activity implements View.OnTouchListener {
             if (downX - upX >= offSet && index < imageList.size() - 1) {
                 index++;
                 if (index == middle) {
-                    pre = index;
+                    pre = 1;
                     cur = 0;
                 } else if (index < middle) {
-                    pre = index;
-                    cur = index + 1;
+                    pre = middle - index + 1;
+                    cur = middle - index;
                 } else if (index == middle + 1) {
                     pre = 0;
                     cur = index;
@@ -258,8 +270,8 @@ public class ResultActivity extends Activity implements View.OnTouchListener {
                     pre = index + 1;
                     cur = 0;
                 } else if (index < middle - 1) {
-                    pre = index + 2;
-                    cur = index + 1;
+                    pre = middle - index - 2;
+                    cur = middle - index - 1;
                 } else if (index + 1 == middle) {
                     pre = 0;
                     cur = index + 1;
@@ -294,7 +306,7 @@ public class ResultActivity extends Activity implements View.OnTouchListener {
 
         @Override
         protected Boolean doInBackground(Object[] params) {
-            String servlet = Utils.HTTP_URL + "result";
+            String servlet = new Utils().getHttpUrl(ResultActivity.this) + "result";
             try {
                 URL url = new URL(servlet);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();

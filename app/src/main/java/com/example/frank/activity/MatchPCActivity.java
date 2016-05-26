@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.example.frank.test.R;
@@ -30,6 +29,7 @@ import com.example.model.QuestionEntity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -42,7 +42,6 @@ import java.util.Random;
  * 游戏自测界面
  */
 public class MatchPCActivity extends Activity implements View.OnClickListener {
-    private static final String HTTP_SERVLET = Utils.HTTP_URL + "test";
     private static float density;
     private static List<QuestionEntity> questions;
     public static List<Drawable> drawList;
@@ -102,14 +101,13 @@ public class MatchPCActivity extends Activity implements View.OnClickListener {
         public void run() {
             if (timer_count) {
                 if (time_count >= 0) {
-                    if (timer_count) {
-                        Message msg = new Message();
-                        msg.obj = TIME;
-                        msg.arg1 = time_count;
-                        mhandler.handleMessage(msg);
-                    }
-                    time_count -= 1;
+                    Message msg = new Message();
+                    msg.obj = TIME;
+                    msg.arg1 = time_count;
+                    mhandler.handleMessage(msg);
                     mhandler.postDelayed(this, 1000);
+                    time_count -= 1;
+
                 }
                 if (time_count == -1) {
                     timer_count = false;
@@ -169,11 +167,26 @@ public class MatchPCActivity extends Activity implements View.OnClickListener {
                     score += s;
                     mLeft_score.setText(score + "");
                     mLeft_score.setTextColor(Color.GREEN);
+                    showAnswer();
                 } else {
                     SoundUtil.playViberate(context.get(), LoginActivity.setEntity);
                     mAnswer[msg.arg1].setButtonColor(Color.RED);
                     mLeft_score.setTextColor(Color.RED);
                     showAdd(mLeft_right, false, 0);
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                sleep(1500);
+                                Message msg = new Message();
+                                msg.obj = ANSWER;
+                                msg.arg1 = time_count;
+                                sendMessage(msg);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }.start();
                 }
             }
 
@@ -181,9 +194,11 @@ public class MatchPCActivity extends Activity implements View.OnClickListener {
             if (msg.obj == TIME || msg.obj == ANSWER) {
                 if (msg.arg1 >= 0) {
                     mText_sec.setText(msg.arg1 + "");
+                    if (msg.arg1 == 0 && msg.obj == TIME)
+                        showAdd(mLeft_right, false, 0);
                     if (msg.arg1 <= 3)
                         mText_sec.setTextColor(Color.RED);
-                    if (msg.arg1 == 0)
+                    if (msg.arg1 == 0 || msg.obj == ANSWER)
                         showAnswer();
                 }
             }
@@ -307,6 +322,7 @@ public class MatchPCActivity extends Activity implements View.OnClickListener {
         intent.putExtra("score_user", String.valueOf(left));
         intent.putExtra("time", time_user_count);
         intent.putExtra("right_count", right_count);
+        intent.putExtra("result", GameUtil.SHOW_SCORE);
         startActivityForResult(intent, 1);
     }
 
@@ -334,7 +350,7 @@ public class MatchPCActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
 
         SoundUtil.playMusic(this, LoginActivity.setEntity);
-        setContentView(R.layout.match_rand);
+        setContentView(R.layout.match_pc);
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         density = dm.density;
@@ -360,12 +376,10 @@ public class MatchPCActivity extends Activity implements View.OnClickListener {
         mText_sec = (TextView) findViewById(R.id.match_sec);
         mText_sec.setText(TIME_INTERVAL + "");
 
-
-        ProgressBar mLBar = (ProgressBar) findViewById(R.id.match_bar);
-        mLBar.setVisibility(View.GONE);
         mLeft_right = (TextView) findViewById(R.id.match_add);
         mLeft_right.setTypeface(tf);
         mLeft_score = (TextView) findViewById(R.id.match_score);
+        mLeft_score.setTextSize(20);
         RoundImageView mLeft = (RoundImageView) findViewById(R.id.match_view);
         mLeft.setImageDrawable(LoginActivity.HeadDrawabale);
         TextView mLeftUser = (TextView) findViewById(R.id.textView1);
@@ -441,9 +455,10 @@ public class MatchPCActivity extends Activity implements View.OnClickListener {
                 msg.obj = MYANSWER;
                 msg.arg1 = i;
                 timer_count = false;
-                time_answer = time_count;
+                time_answer = Integer.parseInt(String.valueOf(mText_sec.getText()));
                 time_user_count += TIME_INTERVAL - time_answer;
                 mhandler.handleMessage(msg);
+                mhandler.postDelayed(next, 2500);
             }
         }
     }
