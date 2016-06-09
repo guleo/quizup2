@@ -45,6 +45,7 @@ public class FriendAdapter extends RecyclerView.Adapter {
         if (friends != null) {
             FriendViewHolder holder = (FriendViewHolder) viewHolder;
             holder.username.setText(friends.get(i).getUsername());
+            if (heads.get(i) != null)
             holder.head.setImageDrawable(heads.get(i));
             if (friends.get(i).getSex() == 1)
                 holder.sex.setImageResource(R.drawable.female);

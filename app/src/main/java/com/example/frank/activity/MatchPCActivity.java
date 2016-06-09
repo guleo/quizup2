@@ -496,4 +496,8 @@ public class MatchPCActivity extends Activity implements View.OnClickListener {
         super.onResume();
     }
 
+    @Override
+    public void onBackPressed() {
+
+    }
 }

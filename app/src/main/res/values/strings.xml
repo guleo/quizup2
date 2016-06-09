@@ -23,6 +23,7 @@
     <string name="title_user">玩家数据</string>
     <string name="title_friend">好友信息</string>
     <string name="title_share">贡献一题</string>
+    <string name="title_mail">消息</string>
     <string name="title_select">选择主题</string>
     <string name="game_match">对战场数</string>
     <string name="game_score">平均得分</string>
@@ -57,4 +58,6 @@
     <string name="friend_search_box_btn">搜索</string>
 
     <string name="load_text">载入中...</string>
+    <string name="mail_add">添加</string>
+    <string name="mail_cancel">拒绝</string>
 </resources>

@@ -103,7 +103,7 @@ public class UserHeadActivity extends Activity implements View.OnClickListener, 
                 filePath = filePath.substring(filePath.lastIndexOf(":") + 1);
                 String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
                 FileInputStream fout = new FileInputStream(filePath);
-                temp = BitmapFactory.decodeStream(fout);
+                //temp = BitmapFactory.decodeStream(fout);
                 out.writeBytes("--" + "*****" + "\r\n");
                 out.writeBytes("Content-Disposition: form-data; " +
                         "name=\"file1\";filename=\"" +
@@ -157,7 +157,15 @@ public class UserHeadActivity extends Activity implements View.OnClickListener, 
                         public void run() {
                             dialog.dismiss();
                             mHeadImage.setImageBitmap(temp);
-                            temp = null;
+                            FileInputStream in = null;
+                            try {
+                                in = new FileInputStream(o.toString());
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                            Bitmap b = BitmapFactory.decodeStream(in);
+                            mHeadImage.setImageBitmap(b);
+                            //temp = null;
                             LoginActivity.HeadDrawabale = (BitmapDrawable) mHeadImage.getDrawable();
                             mHeadImage.invalidate();
                         }

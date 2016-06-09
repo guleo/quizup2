@@ -8,7 +8,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.example.frank.activity.LoadActivity;
 import com.example.frank.test.R;
+import com.example.frank.ui.BezierView;
 import com.example.frank.ui.Item;
 import com.example.frank.util.Utils;
 
@@ -29,17 +31,19 @@ public class MenuAdapter extends BaseAdapter {
             R.drawable.player,
             R.drawable.friend,
             R.drawable.set,
-            R.drawable.share
+            R.drawable.share,
+            R.drawable.mail
     };
 
     private final String[] activityName = {
-            "UserActivity", "FriendActivity", "SetActivity","ShareActivity"
+            "UserActivity", "FriendActivity", "SetActivity", "ShareActivity", "MailActivity"
     };
     public static final String[] texts = {
             "你的战绩",
             "你的战友",
             "你的设定",
-            "你的分享"
+            "你的分享",
+            "你的消息"
     };
 
     @Override
@@ -67,6 +71,14 @@ public class MenuAdapter extends BaseAdapter {
         TextView text = (TextView) view.findViewById(R.id.text);
         text.setText(texts[i]);
         text.setTypeface(tf);
+        if (i == 4) {
+            int size = LoadActivity.mails.size();
+            if (size > 0) {
+                BezierView mBezier = (BezierView) view.findViewById(R.id.bezier);
+                mBezier.setVisibility(View.VISIBLE);
+                mBezier.setText(size + "");
+            }
+        }
         return view;
     }
 }

@@ -2,6 +2,7 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/example/frank/dialog/SweetAlertDialog.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/example/frank/ui/BezierView.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/example/frank/ui/FrameAnimationController.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/example/frank/ui/OptAnimationLoader.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/example/frank/ui/PowerImageView.java" charset="GBK" />
@@ -27,6 +28,11 @@
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/error_circle.xml" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/frame.png" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/gray_button_background.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/idp.png" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/idq.png" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/idr.png" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/ids.png" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/idt.png" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/login_checked.png" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/login_unchecked.png" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/mask.png" charset="GBK" />
@@ -37,9 +43,12 @@
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/search_edittext_shape.xml" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/search_icon.png" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/search_item.png" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/skin_tips_new.png" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/skin_tips_newmessage_ninetynine.png" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/start_play.png" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/success_bow.xml" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/success_circle.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/tip_anim.xml" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/warning_circle.xml" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/warning_sigh.xml" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/layout/alert_dialog.xml" charset="GBK" />

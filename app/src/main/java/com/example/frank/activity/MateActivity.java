@@ -47,6 +47,7 @@ public class MateActivity extends Activity {
     private String url_rival;
     private String HTTP_SERVLET;
     private String rival;
+    private boolean sig_back = false;
     public static Drawable rivalDrawable;
     private SweetAlertDialog d;
     private MatchTask task;
@@ -107,6 +108,7 @@ public class MateActivity extends Activity {
         protected Object doInBackground(Object[] params) {
             try {
                 try {
+                    sig_back = false;
                     URL url = new URL(HTTP_SERVLET);
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
                     con.setDoInput(true);
@@ -136,7 +138,9 @@ public class MateActivity extends Activity {
                         rivalDrawable = new BitmapDrawable(null, bitmap);
                         rival = obj.getString("rival");
                         url_rival = obj.getString("url_rival");
-                        Thread.sleep(2000);
+
+                            Thread.sleep(2000);
+
                         final JSONArray a = new JSONArray(obj.getString("questions"));
                         questions = a.toString();
                         return "success";
@@ -160,17 +164,19 @@ public class MateActivity extends Activity {
             if (o != null)
                 switch ((String) o) {
                     case "fail":
-                        d = new SweetAlertDialog(MateActivity.this, SweetAlertDialog.ERROR_TYPE);
-                        d.setTitleText("匹配超时");
-                        d.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                Intent intent = new Intent(MateActivity.this, MainActivity.class);
-                                startActivity(intent);
-                                MateActivity.this.finish();
-                            }
-                        });
-                        d.show();
+                        if(!sig_back) {
+                            d = new SweetAlertDialog(MateActivity.this, SweetAlertDialog.ERROR_TYPE);
+                            d.setTitleText("匹配超时");
+                            d.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    Intent intent = new Intent(MateActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                    MateActivity.this.finish();
+                                }
+                            });
+                            d.show();
+                        }
                         break;
                     case "success":
                         mRivalImage.setMovie(null);
@@ -184,8 +190,8 @@ public class MateActivity extends Activity {
                                 Intent intent = new Intent(getBaseContext(), MatchRandActivity.class);
                                 intent.putExtra("json", questions);
                                 intent.putExtra("rival", rival);
-                                intent.putExtra("url_rival",url_rival);
-                                Log.d("url_rival",url_rival);
+                                intent.putExtra("url_rival", url_rival);
+                                Log.d("url_rival", url_rival);
                                 startActivity(intent);
                             }
                         }, 2500);
@@ -219,6 +225,7 @@ public class MateActivity extends Activity {
     public void onBackPressed() {
         super.onBackPressed();
         this.finish();
+        sig_back = true;
         task.cancel(true);
     }
 }

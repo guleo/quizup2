@@ -46,7 +46,7 @@
     <style name="edit_error" parent="edit_item">
         <item name="android:hint">@string/edit_error</item>
     </style>
-    
+
     <style name="list_item_fold_btn">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:layout_width">0dp</item>
@@ -56,7 +56,7 @@
         <item name="android:textSize">12sp</item>
     </style>
 
-    <style name="match_progressBar" >
+    <style name="match_progressBar">
         <item name="android:indeterminateOnly">false</item>
         <item name="android:progressDrawable">@drawable/match_progress</item>
         <item name="android:maxHeight">25dp</item>
@@ -96,6 +96,13 @@
         <item name="android:paddingLeft">21dp</item>
         <item name="android:paddingRight">21dp</item>
         <item name="android:textColor">@color/button_text_color</item>
+    </style>
+
+    <style name="mail_friend_btn">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">10sp</item>
     </style>
 
 </resources>

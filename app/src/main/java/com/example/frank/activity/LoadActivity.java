@@ -35,12 +35,13 @@ import java.util.List;
  */
 public class LoadActivity extends Activity {
 
-    private  String HTTP_SERVLET;
+    private String HTTP_SERVLET;
     private JSONArray class_data;
     private Handler mHandler = new Handler();
     private String questions = null;
     private int mode = -1;
     public static List<List<String>> type = new ArrayList<>();
+    public static List<String> mails = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +91,21 @@ public class LoadActivity extends Activity {
                     String info = reader.readLine();
                     if (info != null) {
                         class_data = new JSONArray(info);
+                        url = new URL(new Utils().getHttpUrl(LoadActivity.this) + "mail");
+                        con = (HttpURLConnection) url.openConnection();
+                        con.setDoOutput(true);
+                        con.setDoInput(true);
+                        writer = new DataOutputStream(con.getOutputStream());
+                        send = "username=" + LoginActivity.entity.getUsername();
+                        writer.write(send.getBytes());
                         for (int i = 0; i < class_data.length(); i++) {
                             type.add(getStringData(i));
+                        }
+                        reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                        String info1 = reader.readLine();
+                        class_data = new JSONArray(info1);
+                        for (int i = 0; i < class_data.length(); i++) {
+                            mails.add(class_data.getJSONObject(i).getString("mail"));
                         }
                         return true;
                     }
@@ -134,7 +148,7 @@ public class LoadActivity extends Activity {
                             intent.setClass(LoadActivity.this, MainActivity.class);
                         else {
                             intent.setClass(LoadActivity.this, MatchPCActivity.class);
-                            intent.putExtra("json",questions);
+                            intent.putExtra("json", questions);
                         }
                         startActivity(intent);
                     }

@@ -61,6 +61,9 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
     private static boolean isRight;
     private static List<QuestionEntity> questions;
     public static List<Drawable> drawList;
+    private int time_out_count = 0;
+    private boolean timer_out_count = true;
+    private int time_out_mode = 5;
     //当前已完成的题目计数
     private static int quiz_count;
     private static TextView mLeft_right, mRight_right;
@@ -145,6 +148,21 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
         }
     }
 
+    private Thread time_out = new Thread() {
+        @Override
+        public void run() {
+            if (timer_out_count && answer_count < 2) {
+                time_out_count++;
+                mhandler.postDelayed(this, 1000);
+                if (time_out_count == time_out_mode) {
+                    timer_out_count = false;
+                    Message msg = new Message();
+                    msg.obj = RUNAWAY;
+                    mhandler.sendMessage(msg);
+                }
+            }
+        }
+    };
     //计时线程
     private Thread t = new Thread() {
         @Override
@@ -169,12 +187,11 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
                     timer_count = false;
                     mhandler.postDelayed(next, 2500);
                 }
-                if (time_count == -5) {
-                    timer_count = false;
-                    Message msg = new Message();
-                    msg.obj = RUNAWAY;
-                    mhandler.sendMessage(msg);
-                }
+                if (time_count == -1 && (answer_count == 1 && isAnswer || answer_count == 0))
+                    time_out.run();
+            } else if (answer_count == 1) {
+                time_out.run();
+                time_out_mode = 15;
             }
 
         }
@@ -237,6 +254,7 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
             msg.arg1 = arg1;
             Log.d("answer_count", answer_count + "");
             mhandler.sendMessage(msg);
+            timer_out_count = false;
             while (true) {
                 if (answer_count == 2) {
                     //继续监听，直到双方都已选择
@@ -269,6 +287,7 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
         @Override
         public void handleMessage(Message msg) {
             if (msg.obj == MYANSWER) {
+                isAnswer = true;
                 if (msg.arg1 == answer_right) {
                     isRight = true;
                     right_count++;
@@ -285,7 +304,8 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
                 } else {
                     isRight = false;
                     SoundUtil.playViberate(context.get(), LoginActivity.setEntity);
-                    mAnswer[msg.arg1].setButtonColor(Color.RED);
+                    if (msg.arg1 != -1)
+                        mAnswer[msg.arg1].setButtonColor(Color.RED);
                     mLeft_score.setTextColor(Color.RED);
                     showAdd(mLeft_right, false, 0);
                 }
@@ -313,23 +333,29 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
                     mText_sec.setText(msg.arg1 + "");
                     if (msg.arg1 <= 3)
                         mText_sec.setTextColor(Color.RED);
-                    if (msg.arg1 == 0)
+                    if (msg.arg1 == 0 && (answer_count == 1 && isAnswer))
+                        showAnswer();
+                    if (answer_count==2)
                         showAnswer();
                 }
             }
 
             if (msg.obj == NEXT) {
-
+                Log.d("answer_count", answer_count + "");
                 showNext();
             }
 
             if (msg.obj == RUNAWAY) {
+                timer_count = false;
+                timer_out_count = false;
                 SweetAlertDialog dialog = new SweetAlertDialog(MatchRandActivity.this, SweetAlertDialog.WARNING_TYPE);
                 dialog.setTitleText("对手逃跑了...");
                 dialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        onBackPressed();
+                        Intent intent = new Intent();
+                        intent.setClass(MatchRandActivity.this, MainActivity.class);
+                        startActivity(intent);
                     }
                 });
                 dialog.show();
@@ -341,10 +367,12 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
          * 显示下一题
          */
         private void showNext() {
+            answer_count = 0;
             new Thread() {
                 @Override
                 public void run() {
                     int arg1 = 0;
+
                     try {
                         ServerSocket s = new ServerSocket(10000);
                         Socket socket = s.accept();
@@ -386,7 +414,9 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
             }.start();
 
             time_count = GameUtil.MATCH_TIME_INTERVAL;
-            answer_count = 0;
+            time_out_count = 0;
+            time_out_mode = 5;
+            timer_out_count = true;
             mText_sec.setText(time_count + "");
             mText_sec.setTextColor(context.get().getResources()
                     .getColor(android.R.color.holo_orange_light));
@@ -450,6 +480,8 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
      * 显示分数加倍提醒
      */
     private void showExt() {
+        timer_out_count = false;
+        timer_count = false;
         mode = PROGRESS_EXT;
         Intent intent = new Intent();
         intent.setClass(this, MatchExtActivity.class);
@@ -710,7 +742,7 @@ public class MatchRandActivity extends Activity implements View.OnClickListener 
 
     @Override
     public void onBackPressed() {
-        this.finish();
-        timer_count = false;
+//        this.finish();
+//        timer_count = false;
     }
 }

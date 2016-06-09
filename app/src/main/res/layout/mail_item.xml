@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:gravity="center_vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:paddingLeft="5dp">
+
+    <TextView
+            android:layout_width="250dp"
+            android:layout_height="@dimen/list_item_height"
+            android:textSize="15sp"
+            android:textColor="@android:color/white"
+            android:textStyle="italic"
+            android:id="@+id/text"
+            android:gravity="center_vertical"/>
+
+    <Button
+            android:id="@+id/accept"
+            style="@style/mail_friend_btn"
+            android:layout_margin="5dp"
+            android:text="@string/mail_add"
+            android:background="@drawable/btn_search_bg"
+            />
+
+    <Button
+            android:id="@+id/cancel"
+            style="@style/mail_friend_btn"
+            android:text="@string/mail_cancel"
+            android:background="@drawable/btn_friend_cancel"/>
+</LinearLayout>

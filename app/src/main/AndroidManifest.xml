@@ -1,11 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.example.frank.test">
+          package="com.example.frank.test"
+          android:installLocation="auto">
 
     <application
             android:hardwareAccelerated="false"
             android:allowBackup="true"
             android:label="@string/app_name"
             android:icon="@mipmap/ic_launcher"
+
             android:theme="@android:style/Theme.NoTitleBar">
         <activity android:name="com.example.frank.activity.LoginActivity">
             <intent-filter>
@@ -79,6 +81,8 @@
         <activity android:name="com.example.frank.activity.LoadActivity"/>
         <activity android:name="com.example.frank.activity.MatchPCActivity"/>
         <activity android:name="com.example.frank.activity.ClassActivity"/>
+        <activity android:name="com.example.frank.activity.MailActivity"/>
+
     </application>
 
     <uses-permission android:name="android.permission.VIBRATE"/>

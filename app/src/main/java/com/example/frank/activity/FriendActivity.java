@@ -49,6 +49,7 @@ public class FriendActivity extends Activity implements View.OnClickListener, Se
     private static final int SHOW_USER = 0;
     private static final int ADD_USER = 1;
     private static final int FIND_USER = 2;
+
     private RecyclerView mListView;
     private SearchBox mBox;
     private FriendAdapter mAdapter;
@@ -264,7 +265,7 @@ public class FriendActivity extends Activity implements View.OnClickListener, Se
         protected void onPostExecute(Object o) {
             switch ((Integer) o) {
                 case ADD_USER:
-                    d.setTitleText("添加成功");
+                    d.setTitleText("发送成功，等待好友请求");
                     d.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
                     d.showConfirmText(false);
                     d.show();
@@ -272,7 +273,7 @@ public class FriendActivity extends Activity implements View.OnClickListener, Se
                         @Override
                         public void run() {
                             d.dismiss();
-                            mAdapter.notifyItemInserted(friends.size() - 1);
+                            //mAdapter.notifyItemInserted(friends.size() - 1);
                         }
                     }, 1000);
 
